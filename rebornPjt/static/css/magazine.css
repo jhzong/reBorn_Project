@@ -1,0 +1,15 @@
+.main-header-area {
+    margin: 137px auto 0;
+    flex-direction: row;
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+
+    margin: 0 auto;
+    border-radius: 0;
+    background-color: #fff;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1095px;    
+}
