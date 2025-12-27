@@ -1,3 +1,16 @@
 from django.db import models
 
-# Create your models here.
+class Restaurants(models.Model):
+    resno=models.IntegerField(primary_key=True)
+    locno=models.IntegerField
+    res_name=models.CharField(max_length=50)
+    desc=models.TextField(null=True)
+    addr=models.CharField(max_length=200)
+    tel=models.CharField(max_length=13)
+    lat=models.DecimalField(max_digits=10,decimal_places=7)
+    lng=models.DecimalField(max_digits=10,decimal_places=7)
+    date=models.DateTimeField(auto_now=True)
+    mem_id=models.CharField(max_length=25)
+    
+    def __str__(self):
+        return f"{self.resno},{self.res_name},{self.tel},{self.mem_id}"
