@@ -18,9 +18,21 @@ body.modal-open {
 .modal {
     /*background: rgba(0, 0, 0, 0.8);*/ /* 어두운 배경 오버레이 */
     position: fixed;
-    top:20%;
-    left: 30%;
+    /* 1. 화면의 정중앙 지점으로 이동 */
+    top: 50%;
+    left: 50%;
+    
+    /* 2. 모달 자신의 크기 절반만큼 왼쪽/위쪽으로 다시 이동 (진정한 중앙 정렬) */
+    transform: translate(-50%, -50%);
     z-index: 1050; /* 👈 이 속성 덕분에 다른 요소 위에 보입니다 */
+
+    /* 👇 추가된 반응형 대응 코드 */
+    width: 90%;            /* 모바일 화면에서 화면 너비의 90%만 차지 */
+    max-width: 740px;      /* 데스크톱 등 큰 화면에서는 최대 740px로 제한 */
+    max-height: 95vh;      /* 모바일 화면 높이의 95%를 넘지 않도록 설정 (핵심) */
+    
+    outline: none;
+    /* display: none; */ /* JS로 제어될 것이므로 주석 처리 */
 }
 
 @media (min-width: 768px) {
@@ -58,15 +70,41 @@ body.modal-open {
 }
 
 .modal-footer {
-    padding: 15px;
-    flex: 1; /* 두 버튼이 동일한 너비로 확장 */
-    padding: 12px;
-    border-radius: 8px;
+    display: flex; /* 내부 요소를 가로로 정렬 */
+    justify-content: space-between; /* 왼쪽/오른쪽 끝으로 분리 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    padding: 15px 20px; /* 푸터 내부 여백 (상하 15px, 좌우 20px) */
+    border-top: 1px solid #eee; /* 상단 구분선 */
+}
+
+.modal-footer button {
+    display: flex; /* Flexbox 레이아웃 활성화 */
+    justify-content: space-between; /* 중요: 양쪽 끝 정렬 (왼쪽 끝 vs 오른쪽 끝) */
+    align-items: center; /* 세로 중앙 정렬 */
+    padding: 10px 15px; /* 내부 여백 설정 */
+}
+
+/* "전체 해제" 버튼 (보조 액션) */
+.btn-clear-all {
+    /* 버튼처럼 보이지 않게 텍스트 링크 스타일로 변경 */
+    background: none;
+    border: none;
+    color: #666; /* 이미지 속 텍스트 색상 */
+    font-size: 14px;
     cursor: pointer;
-    font-weight: bold;
-    text-align: center;
-    text-decoration: none;
-    transition: background-color 0.2s;
+    padding: 0;
+    text-decoration: underline; /* 밑줄 추가 */
+}
+
+/* "필터 적용" 버튼 (주요 액션) */
+.btn-apply-filter {
+    background-color: #111; 
+    color: #fff; 
+    border: none;
+    padding: 10px 20px; 
+    border-radius: 6px;
+    cursor: pointer;
+    height: 40px;
 }
 
 @media (min-width: 768px) {
@@ -141,29 +179,9 @@ body.modal-open {
 
 /* --- 입력 필드 및 검색 버튼 --- */
 .form-control {
-    background-color: #fafafa;
-    border-color: #eeeeee;
-    border-radius: 0;
-    box-shadow: none;
-    height: 40px;
-}
-
-.form-control:focus {
-    border-color: #1b47b3;
-}
-
-.form-group.has-clear {
-    position: relative;
-}
-
-.form-control-clear {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    width: 20px;
-    height: 20px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
 }
 
 /* --- 체크박스 버튼 스타일 (핵심) --- */
@@ -220,23 +238,6 @@ body.modal-open {
 .search-check-box input[type="checkbox"]:checked + label .checkbox-icon {
      /* 체크 시 on 이미지로 변경 */
     background-image: url(/assets/image/search/icon_check_on.png);
-}
-
-/* --- 필터 적용 버튼 (하단) --- */
-/* 버튼 기본 스타일은 기존 CSS(.btn, .btn-default) 사용 */
-.btn-apply-filter {
-    /* 이미지 상의 '필터 적용' 버튼 색상과 크기 지정 */
-    background-color: #1b47b3;
-    color: #fff;
-    border-color: #1b47b3;
-    float: right;
-    margin-top: 15px;
-}
-
-.btn-apply-filter:hover {
-    background-color: #15378c;
-    border-color: #15378c;
-    color: #fff;
 }
 
 /* --- 평균 가격대 및 영업시간 섹션 --- */

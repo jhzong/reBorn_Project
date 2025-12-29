@@ -66,8 +66,8 @@ function toggleDetailView(clickedCheckbox) {
             <div class="title">다음 단어를 포함</div>
           </div>
           <div class="filters">
-            <div class="form-group has-feedback">
-              <input type="text" class="form-control" placeholder="검색어를 입력해 주세요" />
+            <div class="r_search-box">
+                <input type="text" placeholder="음식점 이름을 검색해보세요">
             </div>
           </div>
         </div>
@@ -164,7 +164,7 @@ function toggleDetailView(clickedCheckbox) {
                     <div style="flex: 1;">
                         <label for="price-min" style="display: block; font-size: 12px; color: #999;">최저</label>
                         <div style="position: relative;">
-                            <span style="position: absolute; left: 12px; top: 8px; color: #555;">₩</span>
+                            <span style="position: absolute; left: 12px; top: 18px; color: #555;">₩</span>
                             <input type="number" id="price-min" class="form-control" value="0" style="padding-left: 25px;">
                         </div>
                     </div>
@@ -172,7 +172,7 @@ function toggleDetailView(clickedCheckbox) {
                     <div style="flex: 1;">
                         <label for="price-max" style="display: block; font-size: 12px; color: #999; text-align: right;">최고</label>
                         <div style="position: relative;">
-                            <span style="position: absolute; left: 12px; top: 8px; color: #555;">₩</span>
+                            <span style="position: absolute; left: 12px; top: 18px; color: #555;">₩</span>
                             <input type="number" id="price-max" class="form-control" value="1000000" style="padding-left: 25px;">
                         </div>
                     </div>
@@ -226,8 +226,8 @@ function toggleDetailView(clickedCheckbox) {
       
       <!-- Modal Footer -->
       <div class="modal-footer">
-        <button type="button" class="btn btn-default">전체 해제</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal">필터 적용</button>
+        <button class="btn-clear-all" type="button">전체 해제</button>
+        <button class="btn-apply-filter" type="button">필터 적용</button>
       </div>
     </div>
   </div>
