@@ -227,7 +227,6 @@ ul {
 /* --- 메인 콘텐츠 스타일 --- */
 .content {
     flex: 1; /* 남은 공간을 모두 차지하여 푸터를 아래로 밀어냄 */
-    /*padding: 40px 5%;*/
 }
 
 /* --- 푸터 스타일 --- */
@@ -273,10 +272,6 @@ ul {
     transform: translateY(-9.5px) rotate(-45deg);
 }
 
-#magazine_bg{
-    height:244px;width:100%;background:url('/static/images/common/back_magazine.jpg') no-repeat;
-    background-size: cover;
-}
 
 #board_bg{
     height:244px;width:100%;background:url('/static/images/common/back_community.jpg') no-repeat;

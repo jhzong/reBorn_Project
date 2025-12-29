@@ -2,7 +2,7 @@
 
 {% comment %} css 작업은 여기서 하세요!! {% endcomment %}
 {% block css %}
-<link rel='stylesheet' href="/static/css/magazine.css">
+<link rel='stylesheet' type="text/css" href="/static/css/magazine.css">
 {% endblock css %}
 
 {% comment %} script 작업은 여기서 하세요!! {% endcomment %}
@@ -13,11 +13,19 @@
 {% comment %} body 작업은 여기서 하세요!! {% endcomment %}
 {% block body %}
 
-    <div id='board_bg'>
-
-        <div clss='main-header-area'>
+    <div class='magazine_bg'>
+        <div class='magazine-header'>
+            <div class='search-title'>
+                리본 매거진
+            </div>
+            <div class="search-container">
+                <div class="search-box">
+                    <span class="search-icon"><img src='/static/images/magazine/search_icon.png'></span>
+                    <input type="text" placeholder="매거진 내에서 검색해보세요."/>
+                </div>
+                <button class="search-btn">검색</button>
+            </div>
         </div>
-
     </div>
 
 
