@@ -15,28 +15,28 @@
 
 <body>
 
-<header class="header">
-    <h1 class="logo">🍽️ 미식 가이드</h1>
+<header class="r_header">
+    <h1 class="r_logo">🍽️ 미식 가이드</h1>
 
-    <div class="search-box">
+    <div class="r_search-box">
         <input type="text" placeholder="음식점 이름을 검색해보세요">
         <button>검색</button>
     </div>
 </header>
 
-<main class="container">
+<main class="r_container">
 
     <!-- 카드 리스트 -->
-    <section class="card-grid">
+    <section class="r_card-grid">
         <!-- 카드 20개 예시 -->
         <!-- 실제 Django에서는 for문으로 처리 -->
         <!-- START -->
-        <div class="card">
+        <div class="r_card">
             <img src="https://picsum.photos/400/300?1">
-            <div class="card-body">
+            <div class="r_card-body">
                 <h3>이가네</h3>
-                <p class="category">한식 · 회</p>
-                <p class="location">📍 서울 강남구</p>
+                <p class="r_category">한식 · 회</p>
+                <p class="r_location">📍 서울 강남구</p>
             </div>
         </div>
 
@@ -50,12 +50,12 @@
             const grid = document.querySelector('.card-grid');
             for(let i=2; i<=20; i++){
                 grid.innerHTML += `
-                <div class="card">
+                <div class="r_card">
                     <img src="https://picsum.photos/400/300?${i}">
-                    <div class="card-body">
+                    <div class="r_card-body">
                         <h3>음식점 ${i}</h3>
-                        <p class="category">카테고리</p>
-                        <p class="location">📍 서울 어딘가</p>
+                        <p class="r_category">카테고리</p>
+                        <p class="r_location">📍 서울 어딘가</p>
                     </div>
                 </div>`;
             }
