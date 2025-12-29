@@ -287,3 +287,16 @@ ul {
     height:244px;width:100%;background:url('/static/images/common/back_header.jpg') no-repeat;
     background-size: cover;
 }
+
+
+/* PAGING */
+.btnAreaList{position:relative; width:100%; text-align:center; clear:both;}
+.allPageMoving1{margin:30px 0 50px 0;}
+.allPageMoving1 *{vertical-align:top;}
+.allPageMoving1 a{display:inline-block;width:25px;height:25px;line-height:23px;color:#888;text-decoration:none; border:1px #c0c0c0 solid; background:#fff; font-size:12px;}
+.allPageMoving1 a.n{border:0;padding:0;}
+.allPageMoving1 a.pre{border:0;padding:0;}
+.allPageMoving1 a.next{border:0;padding:0;}
+.allPageMoving1 a img{vertical-align:top;}
+.allPageMoving1 span.mobile{display:none;}
+.allPageMoving1 strong{display:inline-block; width:25px; height:25px; line-height:23px; color:#f7703c; text-decoration:none; border:1px #f7703c solid; background:#fff; font-size:12px; font-weight:normal;}
