@@ -2,7 +2,7 @@ from django.db import models
 
 class Restaurants(models.Model):
     resno=models.IntegerField(primary_key=True)
-    locno=models.IntegerField
+    locno=models.IntegerField(default=0)
     res_name=models.CharField(max_length=50)
     desc=models.TextField(null=True)
     addr=models.CharField(max_length=200)
