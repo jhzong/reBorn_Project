@@ -14,10 +14,12 @@ def mlist(request):
     paginator = Paginator(qs,10)
     qs_list = paginator.get_page(page)
     
-    if paginator.count % 4:
-        more_loop = 4 - paginator.count
-    
-    context = {'qs_code':qs_code,'list':qs_list,'page':page,'list_count':paginator.count}
+    if paginator.count < 5:
+        etc = 4 - paginator.count
+    else:
+        etc = 4 - (paginator.count % 4)
+        
+    context = {'qs_code':qs_code,'list':qs_list,'page':page,'etc_count':etc}
     return render(request,'magazine/mlist.html',context)
 
 

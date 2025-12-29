@@ -19,7 +19,7 @@
 .magazine-body ul{margin:0 auto;width:1250px;display: flex;flex-flow: row wrap;justify-content: space-between;}
 .magazine_item {width:300px;margin-bottom: 30px;}
 .magazine_item p{height: 66px;overflow: hidden;text-overflow: ellipsis;line-height: 150%;color: #585a74;font-family: SUIT, sans-serif;font-size: 14px;font-weight: 400;margin: 0 0 17px;}
-.magazine_item img{width:300px;border-top-left-radius: 15px;border-top-right-radius: 15px;}
+.magazine_item img{width:300px;height:200px; border-top-left-radius: 15px;border-top-right-radius: 15px;object-fit: cover; /* 또는 contain, fill, scale-down, none */}
 .magazine_item figure{border-bottom: 1px solid #d3d3d3;}
 .magazine_item figcaption{padding:15px 8px 12px;}
 .magazine_item .card-category{font-family: SUIT, sans-serif;font-size: 14px;font-weight: 400;line-height: normal;line-height: 150%;color: #3e404e;margin-bottom: 0;}
