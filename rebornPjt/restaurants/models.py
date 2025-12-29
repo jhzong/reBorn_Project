@@ -1,6 +1,6 @@
 from django.db import models
 
-class Restaurants(models.Model):
+class Restaurant(models.Model):
     resno=models.AutoField(primary_key=True)
     locno=models.IntegerField(default=0)
     res_name=models.CharField(max_length=50,null=True)

@@ -13,10 +13,10 @@
 {% comment %} body 작업은 여기서 하세요!! {% endcomment %}
 {% block body %}
 
-    <div class='magazine_bg'>
+    <div class='magazine-header_bg'>
         <div class='magazine-header'>
             <div class='search-title'>
-                리본 매거진
+                Reborn 매거진
             </div>
             <div class="search-container">
                 <div class="search-box">
@@ -28,7 +28,186 @@
         </div>
     </div>
 
+    <div class='magazine-body'>
 
+        <div class='magazine-category'>
+            <select>
+                <option>전체</option>
+                {% for code in qs_code %}
+                    <option value="{{code.mtype}}">{{code.mtype_desc}}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <ul>
+            <li class='magazine_item'>
+                <a href='#'>
+                    <figure>
+                        <div><img src='/media/magazine_1.jpg'></div>
+                        <figcaption>
+                            <span class='card-category'>레스토랑 & 카페 </span>
+                            <h4 class='card-title'>동네의 결이 이어지는 길 - 성북천 미식 산책</h4>
+                            <p>
+                                신설동역부터 보문역, 성신여대입구역, 한성대입구역까지 이어지는 성북천은 오래된 노포부터 힙한 카페거리를 아우르며 시간이 켜켜이 축적된 터전이다. 다양한 연령대가 자연스럽게 공존하고, 물길을 따라 크고 작은 이야기가 흐르는 곳. 성북천의 맛집을 소개한다.
+                            </p>
+                            <span class='card-date'>2025.12.23</span>
+                        </figcaption>
+                    </figure>
+                </a>
+            </li>
+            <li class='magazine_item'>
+                <a href='#'>
+                    <figure>
+                        <div><img src='/media/magazine_1.jpg'></div>
+                        <figcaption>
+                            <span class='card-category'>레스토랑 & 카페 </span>
+                            <h4 class='card-title'>동네의 결이 이어지는 길 - 성북천 미식 산책</h4>
+                            <p>
+                                신설동역부터 보문역, 성신여대입구역, 한성대입구역까지 이어지는 성북천은 오래된 노포부터 힙한 카페거리를 아우르며 시간이 켜켜이 축적된 터전이다. 다양한 연령대가 자연스럽게 공존하고, 물길을 따라 크고 작은 이야기가 흐르는 곳. 성북천의 맛집을 소개한다.
+                            </p>
+                            <span class='card-date'>2025.12.23</span>
+                        </figcaption>
+                    </figure>
+                </a>
+            </li>
+            <li class='magazine_item'>
+                <a href='#'>
+                    <figure>
+                        <div><img src='/media/magazine_1.jpg'></div>
+                        <figcaption>
+                            <span class='card-category'>레스토랑 & 카페 </span>
+                            <h4 class='card-title'>동네의 결이 이어지는 길 - 성북천 미식 산책</h4>
+                            <p>
+                                신설동역부터 보문역, 성신여대입구역, 한성대입구역까지 이어지는 성북천은 오래된 노포부터 힙한 카페거리를 아우르며 시간이 켜켜이 축적된 터전이다. 다양한 연령대가 자연스럽게 공존하고, 물길을 따라 크고 작은 이야기가 흐르는 곳. 성북천의 맛집을 소개한다.
+                            </p>
+                            <span class='card-date'>2025.12.23</span>
+                        </figcaption>
+                    </figure>
+                </a>
+            </li>
+            <li class='magazine_item'>
+                <a href='#'>
+                    <figure>
+                        <div><img src='/media/magazine_1.jpg'></div>
+                        <figcaption>
+                            <span class='card-category'>레스토랑 & 카페 </span>
+                            <h4 class='card-title'>동네의 결이 이어지는 길 - 성북천 미식 산책</h4>
+                            <p>
+                                신설동역부터 보문역, 성신여대입구역, 한성대입구역까지 이어지는 성북천은 오래된 노포부터 힙한 카페거리를 아우르며 시간이 켜켜이 축적된 터전이다. 다양한 연령대가 자연스럽게 공존하고, 물길을 따라 크고 작은 이야기가 흐르는 곳. 성북천의 맛집을 소개한다.
+                            </p>
+                            <span class='card-date'>2025.12.23</span>
+                        </figcaption>
+                    </figure>
+                </a>
+            </li>
+            <li class='magazine_item'>
+                <a href='#'>
+                    <figure>
+                        <div><img src='/media/magazine_1.jpg'></div>
+                        <figcaption>
+                            <span class='card-category'>레스토랑 & 카페 </span>
+                            <h4 class='card-title'>동네의 결이 이어지는 길 - 성북천 미식 산책</h4>
+                            <p>
+                                신설동역부터 보문역, 성신여대입구역, 한성대입구역까지 이어지는 성북천은 오래된 노포부터 힙한 카페거리를 아우르며 시간이 켜켜이 축적된 터전이다. 다양한 연령대가 자연스럽게 공존하고, 물길을 따라 크고 작은 이야기가 흐르는 곳. 성북천의 맛집을 소개한다.
+                            </p>
+                            <span class='card-date'>2025.12.23</span>
+                        </figcaption>
+                    </figure>
+                </a>
+            </li>
+            <li class='magazine_item'>
+                <a href='#'>
+                    <figure>
+                        <div><img src='/media/magazine_1.jpg'></div>
+                        <figcaption>
+                            <span class='card-category'>레스토랑 & 카페 </span>
+                            <h4 class='card-title'>동네의 결이 이어지는 길 - 성북천 미식 산책</h4>
+                            <p>
+                                신설동역부터 보문역, 성신여대입구역, 한성대입구역까지 이어지는 성북천은 오래된 노포부터 힙한 카페거리를 아우르며 시간이 켜켜이 축적된 터전이다. 다양한 연령대가 자연스럽게 공존하고, 물길을 따라 크고 작은 이야기가 흐르는 곳. 성북천의 맛집을 소개한다.
+                            </p>
+                            <span class='card-date'>2025.12.23</span>
+                        </figcaption>
+                    </figure>
+                </a>
+            </li>
+            <li class='magazine_item'>
+                <a href='#'>
+                    <figure>
+                        <div><img src='/media/magazine_1.jpg'></div>
+                        <figcaption>
+                            <span class='card-category'>레스토랑 & 카페 </span>
+                            <h4 class='card-title'>동네의 결이 이어지는 길 - 성북천 미식 산책</h4>
+                            <p>
+                                신설동역부터 보문역, 성신여대입구역, 한성대입구역까지 이어지는 성북천은 오래된 노포부터 힙한 카페거리를 아우르며 시간이 켜켜이 축적된 터전이다. 다양한 연령대가 자연스럽게 공존하고, 물길을 따라 크고 작은 이야기가 흐르는 곳. 성북천의 맛집을 소개한다.
+                            </p>
+                            <span class='card-date'>2025.12.23</span>
+                        </figcaption>
+                    </figure>
+                </a>
+            </li>
+            <li class='magazine_item'>
+                <a href='#'>
+                    <figure>
+                        <div><img src='/media/magazine_1.jpg'></div>
+                        <figcaption>
+                            <span class='card-category'>레스토랑 & 카페 </span>
+                            <h4 class='card-title'>동네의 결이 이어지는 길 - 성북천 미식 산책</h4>
+                            <p>
+                                신설동역부터 보문역, 성신여대입구역, 한성대입구역까지 이어지는 성북천은 오래된 노포부터 힙한 카페거리를 아우르며 시간이 켜켜이 축적된 터전이다. 다양한 연령대가 자연스럽게 공존하고, 물길을 따라 크고 작은 이야기가 흐르는 곳. 성북천의 맛집을 소개한다.
+                            </p>
+                            <span class='card-date'>2025.12.23</span>
+                        </figcaption>
+                    </figure>
+                </a>
+            </li>
+            <li class='magazine_item'>
+                <a href='#'>
+                    <figure>
+                        <div><img src='/media/magazine_1.jpg'></div>
+                        <figcaption>
+                            <span class='card-category'>레스토랑 & 카페 </span>
+                            <h4 class='card-title'>동네의 결이 이어지는 길 - 성북천 미식 산책</h4>
+                            <p>
+                                신설동역부터 보문역, 성신여대입구역, 한성대입구역까지 이어지는 성북천은 오래된 노포부터 힙한 카페거리를 아우르며 시간이 켜켜이 축적된 터전이다. 다양한 연령대가 자연스럽게 공존하고, 물길을 따라 크고 작은 이야기가 흐르는 곳. 성북천의 맛집을 소개한다.
+                            </p>
+                            <span class='card-date'>2025.12.23</span>
+                        </figcaption>
+                    </figure>
+                </a>
+            </li>
+            <li class='magazine_item'>
+                <a href='#'>
+                    <figure>
+                        <div><img src='/media/magazine_1.jpg'></div>
+                        <figcaption>
+                            <span class='card-category'>레스토랑 & 카페 </span>
+                            <h4 class='card-title'>동네의 결이 이어지는 길 - 성북천 미식 산책</h4>
+                            <p>
+                                신설동역부터 보문역, 성신여대입구역, 한성대입구역까지 이어지는 성북천은 오래된 노포부터 힙한 카페거리를 아우르며 시간이 켜켜이 축적된 터전이다. 다양한 연령대가 자연스럽게 공존하고, 물길을 따라 크고 작은 이야기가 흐르는 곳. 성북천의 맛집을 소개한다.
+                            </p>
+                            <span class='card-date'>2025.12.23</span>
+                        </figcaption>
+                    </figure>
+                </a>
+            </li>
+
+
+            <li class='magazine_item'></li>
+            <li class='magazine_item'></li>
+           
+        </ul>         
+
+    </div>
+
+    <div class="pagination">
+        <a href="#">&laquo;</a>
+        <a href="#" class="active">1</a>
+        <a href="#">2</a>
+        <a href="#">3</a>
+        <a href="#">4</a>
+        <a href="#">5</a>
+        <a href="#">&raquo;</a>
+    </div>    
 
 {% endblock body %}
 
