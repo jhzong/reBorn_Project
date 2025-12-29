@@ -6,5 +6,8 @@ launch.json
 __pycache__/
 *.py[codz]
 *$py.class
+*.pyc
+*.pyo
+*.pyd
 
 # DB나 필요없는 다운로드 media파일들도 제외가능
