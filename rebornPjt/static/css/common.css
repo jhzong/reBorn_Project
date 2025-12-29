@@ -287,3 +287,8 @@ ul {
     height:244px;width:100%;background:url('/static/images/common/back_store.jpg') no-repeat;
     background-size: cover;
 }
+
+#header_bg{
+    height:244px;width:100%;background:url('/static/images/common/back_header.jpg') no-repeat;
+    background-size: cover;
+}
