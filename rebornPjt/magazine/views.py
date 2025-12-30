@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.db.models import F,Q,Sum,Count
-from magazine.models import Magazine, Magazine_code
+from magazine.models import Magazine, MagazineCode
 
 
 def mview(request,mno):
@@ -22,7 +22,7 @@ def mlist(request):
     # print('category : ',category,'search : ',search)
     
     # 매거진 코드 정보
-    qs_code = Magazine_code.objects.all()
+    qs_code = MagazineCode.objects.all()
 
     # 매거진 리스트
     if not category: # 공란 처리
@@ -33,8 +33,8 @@ def mlist(request):
             qs = Magazine.objects.filter(Q(mtitle__contains=search)|Q(mcontent__contains=search))
 
     else:
-        qs_category = Magazine_code.objects.get(mtype=category)
-        qs = Magazine.objects.filter(magazine_code=qs_category).order_by('-mdate')
+        qs_category = MagazineCode.objects.get(mtype=category)
+        qs = Magazine.objects.filter(magazinecode=qs_category).order_by('-mdate')
 
     # 패이징
     page = int(request.GET.get('page',1))
