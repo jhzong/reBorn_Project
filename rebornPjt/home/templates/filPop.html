@@ -1,5 +1,18 @@
 <link rel="stylesheet" href="/static/css/searchFilterPop.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous"></script>
+<link href="static/css/nouislider.min.css" rel="stylesheet">
+<style>
+/* --- 슬라이더 (noUiSlider) 스타일 (이미지 기반) --- */
+/* 연결선 색상 변경 */
+.noUi-connect {
+    background: #007bff;
+}
+
+/* 핸들 모양 둥글게 변경 */
+.noUi-horizontal .noUi-handle {
+    border-radius: 50%;
+}
+</style>
+<script src="static/js/nouislider.min.js"></script>
 <script>
 $(document).ready(function() {
     // 1. X 버튼 클릭 시 팝업 닫기
@@ -8,7 +21,119 @@ $(document).ready(function() {
         // 2. 바디 클래스 제거해서 배경 복구
         $('body').removeClass('modal-open');
     });
+
+    //가격 슬라이더
+    var priceSlider = document.getElementById('price-slider'); 
+    var priceMinInput = document.getElementById('price-min');
+    var priceMaxInput = document.getElementById('price-max');
+
+    noUiSlider.create(priceSlider, {
+        // 1. 초기 시작값 (배열로 지정)
+        start: [priceMinInput.value, priceMaxInput.value], 
+        connect: true,      // 핸들 사이 색상 채우기
+        step: 1000,         // 이동 단위
+        range: {            // 최소, 최대 범위
+            'min': 0,
+            'max': 1000000
+        },
+        // 2. 숫자 포맷 설정 (중요: 소수점 제거)
+        format: {
+            to: function (value) {
+                return Math.round(value); // 화면/input에 표시할 때
+            },
+            from: function (value) {
+                return value; // 슬라이더 값으로 읽어올 때
+            }
+        }
+    });
+
+    // 3. 슬라이더 변경 시 Input에 값 전달
+    priceSlider.noUiSlider.on('update', function (values, handle) {
+        // handle 0 = 왼쪽 핸들, handle 1 = 오른쪽 핸들
+        if (handle === 0) {
+            priceMinInput.value = values[0];
+        } else {
+            priceMaxInput.value = values[1];
+        }
+    });
+
+    // 4. Input 값을 직접 수정했을 때 슬라이더 움직이기
+    priceMinInput.addEventListener('change', function() {
+        priceSlider.noUiSlider.set([this.value, null]);
+    });
+    priceMaxInput.addEventListener('change', function() {
+        priceSlider.noUiSlider.set([null, this.value]);
+    });
+
+
+
+    //시간 슬라이더
+    var timeSlider = document.getElementById('time-slider-range');
+    var timeOpenInput = document.getElementById('time-open');
+    var timeCloseInput = document.getElementById('time-close');
+
+    // 'HH:MM' 문자열을 총 '분' 단위 숫자로 변환하는 함수 (예: "06:00" -> 360)
+    function timeToMinutes(time) {
+        if (typeof time === 'number') {
+            return time;
+        }
+
+        if (typeof time === 'string' && time.includes(':')) {
+            const parts = time.split(':');
+            const hours = parseInt(parts[0], 10);
+            const mins = parseInt(parts[1], 10);
+            return hours * 60 + mins;
+        }
+
+        return time;
+    }
+
+    // '분' 단위 숫자를 'HH:MM' 문자열로 변환하는 함수 (예: 360 -> "06:00")
+    function minutesToTime(minutes) {
+        var hours = Math.floor(minutes / 60);
+        var mins = minutes % 60;
+        return ('0' + hours).slice(-2) + ':' + ('0' + mins).slice(-2);
+    }
+
+    noUiSlider.create(timeSlider, {
+        start: [timeToMinutes(timeOpenInput.value), timeToMinutes(timeCloseInput.value)],
+        connect: true,
+        step: 30, // 30분 단위로 이동
+        range: {
+            'min': 0,      // 00:00
+            'max': 1439    // 23:59
+        },
+        format: {
+            to: function (value) {
+                // 슬라이더 숫자 값을 'HH:MM' 문자열로 표시
+                return minutesToTime(Math.round(value));
+            },
+            from: function (value) {
+                // 'HH:MM' 문자열을 숫자 값으로 변환
+                return timeToMinutes(value);
+            }
+        }
+    });
+
+    // 3. 슬라이더 변경 시 Input에 값 전달
+    timeSlider.noUiSlider.on('update', function (values, handle) {
+        // values는 문자열 형태의 시간("HH:MM")으로 반환됩니다.
+        if (handle === 0) {
+            timeOpenInput.value = values[0];
+        } else {
+            timeCloseInput.value = values[1];
+        }
+    });
+
+    // 4. Input 값을 직접 수정했을 때 슬라이더 움직이기
+    timeOpenInput.addEventListener('change', function() {
+        timeSlider.noUiSlider.set([this.value, null]);
+    });
+    timeCloseInput.addEventListener('change', function() {
+        timeSlider.noUiSlider.set([null, this.value]);
+    });
 });
+
 function toggleDetailView(clickedCheckbox) {
     const mainCheckboxes = document.querySelectorAll('input[name="main_category"]'); 
     const checkedRegions = Array.from(mainCheckboxes).filter(cb => cb.checked);
@@ -160,25 +285,25 @@ function toggleDetailView(clickedCheckbox) {
                 <div class="title">평균 가격대</div>
             </div>
             <div class="filters">
-                <div class="price-range-inputs" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    <div style="flex: 1;">
+                <div class="price-range-inputs">
+                    <div>
                         <label for="price-min" style="display: block; font-size: 12px; color: #999;">최저</label>
                         <div style="position: relative;">
                             <span style="position: absolute; left: 12px; top: 18px; color: #555;">₩</span>
-                            <input type="number" id="price-min" class="form-control" value="0" style="padding-left: 25px;">
+                            <input type="text" id="price-min" class="form-control" value="0" style="padding-left: 25px;">
                         </div>
                     </div>
                     <span style="margin: 0 10px; line-height: 40px; color: #999;">-</span>
-                    <div style="flex: 1;">
-                        <label for="price-max" style="display: block; font-size: 12px; color: #999; text-align: right;">최고</label>
+                    <div>
+                        <label for="price-max" style="display: block; font-size: 12px; color: #999;">최고</label>
                         <div style="position: relative;">
                             <span style="position: absolute; left: 12px; top: 18px; color: #555;">₩</span>
-                            <input type="number" id="price-max" class="form-control" value="1000000" style="padding-left: 25px;">
+                            <input type="text" id="price-max" class="form-control" value="1000000" style="padding-left: 25px;">
                         </div>
                     </div>
                 </div>
                 <!-- 가격 슬라이더 위치 (JavaScript로 구현 필요) -->
-                <div id="price-slider-range" class="noUi-target"></div>
+                <div id="price-slider" class="noUi-target"></div>
             </div>
         </div>
         <hr>
@@ -191,33 +316,30 @@ function toggleDetailView(clickedCheckbox) {
             <div class="filters">
                 <!-- 요일 선택 버튼 -->
                 <div class="multiple-buttons weekdays" style="margin-bottom: 20px;">
-                    <div class="checkbox-button"><input type="checkbox" id="day_mon" checked /><label for="day_mon">월</label></div>
-                    <div class="checkbox-button"><input type="checkbox" id="day_tue" checked /><label for="day_tue">화</label></div>
-                    <div class="checkbox-button"><input type="checkbox" id="day_wed" checked /><label for="day_wed">수</label></div>
-                    <div class="checkbox-button"><input type="checkbox" id="day_thu" checked /><label for="day_thu">목</label></div>
-                    <div class="checkbox-button"><input type="checkbox" id="day_fri" checked /><label for="day_fri">금</label></div>
-                    <div class="checkbox-button"><input type="checkbox" id="day_sat" checked /><label for="day_sat">토</label></div>
-                    <div class="checkbox-button"><input type="checkbox" id="day_sun" checked /><label for="day_sun">일</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="day_mon" /><label for="day_mon">월</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="day_tue" /><label for="day_tue">화</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="day_wed" /><label for="day_wed">수</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="day_thu" /><label for="day_thu">목</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="day_fri" /><label for="day_fri">금</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="day_sat" /><label for="day_sat">토</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="day_sun" /><label for="day_sun">일</label></div>
                 </div>
 
                 <!-- 시간 입력 및 슬라이더 -->
-                <div class="time-range-inputs" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div class="time-range-inputs">
                     <div style="display: flex; align-items: center;">
                         <span style="margin-right: 5px; color: #f7b733; font-size: 18px;">☀</span>
-                        <input type="text" id="time-open" class="form-control" value="06:00" style="width: 80px;">
+                        <input type="text" id="time-open" class="form-control" value="00:00" style="width: 80px;">
                     </div>
                     <span style="margin: 0 10px; line-height: 40px; color: #999;">-</span>
                     <div style="display: flex; align-items: center;">
-                         <input type="text" id="time-close" class="form-control" value="06:00" style="width: 80px;">
-                         <span style="margin-left: 5px; color: #f7b733; font-size: 18px;">☀</span>
+                         <input type="text" id="time-close" class="form-control" value="24:00" style="width: 80px;">
+                         <span style="margin-left: 5px; color: #f7b733; font-size: 18px;">☾</span>
                     </div>
                 </div>
                 
                 <!-- 시간 슬라이더 위치 (JavaScript로 구현 필요) -->
                 <div id="time-slider-range" class="noUi-target"></div>
-                <div style="text-align: center; margin-top: 10px; color: #999;">
-                    <span style="margin-right: 5px; color: #555;">&copy;</span> 24:00
-                </div>
             </div>
         </div>
         <hr>
