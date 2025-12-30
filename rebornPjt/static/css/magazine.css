@@ -3,7 +3,7 @@
 .magazine-header {background: #ffffff;width: 1095px;max-width: 1095px;height: 107px;display: flex;align-items: center;padding: 0 28px;border-top-left-radius: 24px;border-top-right-radius: 24px;}
 
 /* SEARCHING */
-.search-title {font-size:30px; font-weight: 500;text-align: center; width:300px;margin-right: 100px;}
+.search-title {font-size:30px; font-weight: 450;text-align: center; width:300px;margin-right: 100px;}
 .search-container {display: flex;align-items: center;width: 100%;max-width: 600px;background: #fff;border-radius: 999px;padding: 6px;box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);}
 .search-box {flex: 1;display: flex;align-items: center;padding: 0 14px;}
 .search-icon {font-size: 16px;color: #9ca3af;margin-right: 8px;}

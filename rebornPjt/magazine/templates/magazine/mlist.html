@@ -7,13 +7,15 @@
 
 {% comment %} script 작업은 여기서 하세요!! {% endcomment %}
 {% block script %}
-<link rel='stylesheet' href="/static/js/magazine.js">
+<script src="/static/js/magazine.js">
 {% endblock script %}
 
 {% comment %} body 작업은 여기서 하세요!! {% endcomment %}
 {% block body %}
 
     <div class='magazine-header_bg'>
+        <form name='searchFrm' action='/magazine/mlist/' method='get'>
+        {% csrf_token %}
         <div class='magazine-header'>
             <div class='search-title'>
                 Reborn 매거진
@@ -21,31 +23,43 @@
             <div class="search-container">
                 <div class="search-box">
                     <span class="search-icon"><img src='/static/images/magazine/search_icon.png'></span>
-                    <input type="text" placeholder="매거진 내에서 검색해보세요."/>
+                    <input type="text" name='search' placeholder="매거진 내에서 검색해보세요."/>
                 </div>
-                <button class="search-btn">검색</button>
+                <button class="search-btn" name='search-btn' onclick='searchBtn()'>검색</button>
             </div>
         </div>
+        </form>
     </div>
 
     <div class='magazine-body'>
 
         <div class='magazine-category'>
-            <select>
-                <option>전체</option>
+            <select id='category' name='category' onchange="selectBtn(this.value)">
+                <option value=''>전체</option>
                 {% for code in qs_code %}
-                    <option value="{{code.mtype}}">{{code.mtype_desc}}</option>
+                    {% if category == code.mtype %}
+                        <option value="{{code.mtype}}" selected>{{code.mtype_desc}}</option>
+                    {% else %}
+                        <option value="{{code.mtype}}">{{code.mtype_desc}}</option>
+                    {% endif %}
                 {% endfor %}
             </select>
         </div>
 
+        <!-- 매거진 출력 start -->
         <ul>
 
             {% for l in list %}
             <li class='magazine_item'>
                 <a href='#'>
                     <figure>
-                        <div><img src='/media/{{l.mfile}}'></div>
+                        <div>
+                            {% if l.mfile %}
+                                <img src='/media/{{l.mfile}}'>
+                            {% else %}
+                                <img src='/static/images/magazine/temp_image.png'>
+                            {% endif %}
+                        </div>
                         <figcaption>
                             <span class='card-category'>{{l.magazine_code.mtype_desc}}</span>
                             <h4 class='card-title'>{{l.mtitle}}</h4>
@@ -66,7 +80,7 @@
             {% endfor %}
             {% endif %}
 
-            <!--
+            <!-- sample /////////////////////////////
             <li class='magazine_item'>
                 <a href='#'>
                     <figure>
@@ -82,23 +96,49 @@
                     </figure>
                 </a>
             </li>
-            -->
+            ///////////////////////////////////// -->
         </ul>         
+        <!-- 매거진 출력 end -->
 
     </div>
 
-    <!-- 페이징 -->
-     
+    <!-- 페이징 start -->
     <div class="btnAreaList">
         <div class="allPageMoving1">
-            <a href="#" class="n"><img src="/static/images/common/btn_pre2.gif" alt="처음으로"/></a><a href="#" class="pre"><img src="/static/images/common/btn_pre1.gif" alt="앞페이지로"/></a>
-            <strong>1</strong>
-            <a href="#">2</a>
-            <a href="#">3</a>
-            <a href="#">4</a>
-            <a href="#">5</a>
-            <a href="#" class="next"><img src="/static/images/common/btn_next1.gif" alt="뒤페이지로"/></a><a href="#" class="n"><img src="/static/images/common/btn_next2.gif" alt="마지막페이지로"/></a>
+            {% if list.has_previous %}
+                <a href="/magazine/mlist/?page=1&category={{category}}&search={{search}}" class="n"><img src="/static/images/common/btn_pre2.gif" alt="처음으로"/></a>
+                <a href="/magazine/mlist/?page={{list.previous_page_number}}&category={{category}}&search={{search}}" class="pre"><img src="/static/images/common/btn_pre1.gif" alt="앞페이지로"/></a>
+            {% else %}
+                <a class="n"><img src="/static/images/common/btn_pre2.gif" alt="처음으로"/></a>
+                <a class="pre"><img src="/static/images/common/btn_pre1.gif" alt="앞페이지로"/></a>
+            {% endif %}
+
+
+            {% for p in list.paginator.page_range %}
+
+                {% if p >= list.number|add:'-3' and p <= list.number|add:'3' %}
+
+                    {% if p == page %}
+                        <strong>{{p}}</strong>
+                    {% else %}
+                        <a href="/magazine/mlist/?page={{p}}&category={{category}}&search={{search}}">{{p}}</a>
+                    {% endif %}
+
+                {% endif %}
+            {% endfor %}
+
+
+            {% if list.has_next %}
+                <a href="/magazine/mlist/?page={{list.next_page_number}}&category={{category}}&search={{search}}" class="next"><img src="/static/images/common/btn_next1.gif" alt="뒤페이지로"/></a>
+                <a href="/magazine/mlist/?page={{list.paginator.num_pages}}&category={{category}}&search={{search}}" class="n"><img src="/static/images/common/btn_next2.gif" alt="마지막페이지로"/></a>
+            {% else %}
+                <a class="next"><img src="/static/images/common/btn_next1.gif" alt="뒤페이지로"/></a>
+                <a class="n"><img src="/static/images/common/btn_next2.gif" alt="마지막페이지로"/></a>
+            {% endif %}
+
         </div>
+        <!-- 페이징 end -->
+
     </div>  
     
 {% endblock body %}

@@ -21,6 +21,6 @@ class Magazine(models.Model):
     mdate = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        return f'{self.mno},{self.mtitle}'
+        return f'{self.mno},{self.mtitle},{self.magazine_code}'
     
 
