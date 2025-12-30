@@ -278,6 +278,43 @@ body.modal-open {
     color: #999;
 }
 
+/* 시간 0~24시로 사용한다면 나중에 주석처리 */
+.time-slider-wrapper {
+    position: relative;
+    margin-top: 20px;
+}
+
+.time-markers {
+    position: absolute;
+    top: 100%;          /* 슬라이더 바로 아래 */
+    left: 0;
+    width: 100%;
+    height: 30px;
+    pointer-events: none; /* 드래그 방해 방지 */
+}
+
+.marker {
+    position: absolute;
+    transform: translateX(-50%);
+    text-align: center;
+    white-space: nowrap;
+}
+
+.marker .line {
+    width: 1px;
+    height: 10px;
+    background: #999;
+    margin: 0 auto;
+}
+
+.marker .label {
+    font-size: 11px;
+    color: #666;
+    margin-top: 4px;
+    white-space: nowrap;
+}
+/* 시간 0~24시로 사용한다면 나중에 주석처리 */
+
 /* 지역검색 'main-filters' 사용 */
 .main-filters {
     display: flex;

@@ -22,6 +22,49 @@ $(document).ready(function() {
         $('body').removeClass('modal-open');
     });
 
+    //상세지역 전체에서 다른 상세지역 체크시 전체(value="")는 체크해제
+    setupDetailCheckboxes();
+
+    //전체해제(초기화)
+    $(document).on("click", ".btn-clear-all", function () {
+        // 1. 메인 체크박스 전체 해제
+        document.querySelectorAll('input[name="loc"]').forEach(cb => cb.checked = false);
+
+        // 2. 상세 그룹 숨기고 상세 체크박스 전체 해제
+        document.querySelectorAll('.detail-group').forEach(group => {
+            group.classList.add('hidden');
+            group.classList.remove('visible');
+            group.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+        });
+
+        // 3. 가격 슬라이더 초기화
+        var priceSlider = document.getElementById('price-slider');
+        var priceMinInput = document.getElementById('price-min');
+        var priceMaxInput = document.getElementById('price-max');
+        priceMinInput.value = 0;
+        priceMaxInput.value = 1000000;
+        priceSlider.noUiSlider.set([0, 1000000]);
+
+        // 4. 시간 슬라이더 초기화
+        var timeSlider = document.getElementById('time-slider-range');
+        var timeOpenInput = document.getElementById('time-open');
+        var timeCloseInput = document.getElementById('time-close');
+        timeOpenInput.value = "06:00";
+        timeCloseInput.value = "05:59";
+        //timeSlider.noUiSlider.set([0, 1440]);
+        timeSlider.noUiSlider.set([0, 1799]);
+
+        // 5. 요일 체크박스 초기화
+        document.querySelectorAll('input[name="weeks"]').forEach(cb => cb.checked = false);
+
+        // 6. 음식 종류 초기화
+        document.querySelectorAll('input[name="ftype"]').forEach(cb => cb.checked = false);
+        
+        // 위에 주석처리하고 아래로 사용해도 되지만 파라미터 넘어오는 경우도 생각 필요
+        // SearchFilterModal('modal-filter');  //파라미터도 같이 가져온 걸로 초기화하고 싶은경우 사용가능
+        // 전체해제 버튼으로 초기화를 진행하면 필터에 저장된 파라미터값을 보여줄 때는 위에 주석 풀고 filPop.html로 옮겨서 사용
+    });
+
     //가격 슬라이더
     var priceSlider = document.getElementById('price-slider'); 
     var priceMinInput = document.getElementById('price-min');
@@ -72,6 +115,13 @@ $(document).ready(function() {
     var timeOpenInput = document.getElementById('time-open');
     var timeCloseInput = document.getElementById('time-close');
 
+    function minutesToOur(minutes){
+        if (minutes > 0 && minutes < 360) {
+            return minutes += 1440;
+        }
+        return minutes;
+    }
+
     // 'HH:MM' 문자열을 총 '분' 단위 숫자로 변환하는 함수 (예: "06:00" -> 360)
     function timeToMinutes(time) {
         if (typeof time === 'number') {
@@ -82,7 +132,11 @@ $(document).ready(function() {
             const parts = time.split(':');
             const hours = parseInt(parts[0], 10);
             const mins = parseInt(parts[1], 10);
-            return hours * 60 + mins;
+
+            let minutes = hours * 60 + mins;
+            minutes = minutesToOur(minutes);
+            return minutes;
+            //return hours * 60 + mins;
         }
 
         return time;
@@ -90,6 +144,7 @@ $(document).ready(function() {
 
     // '분' 단위 숫자를 'HH:MM' 문자열로 변환하는 함수 (예: 360 -> "06:00")
     function minutesToTime(minutes) {
+        minutes = minutes % 1440;  // 24시간 넘어가면 다시 0부터
         var hours = Math.floor(minutes / 60);
         var mins = minutes % 60;
         return ('0' + hours).slice(-2) + ':' + ('0' + mins).slice(-2);
@@ -100,8 +155,8 @@ $(document).ready(function() {
         connect: true,
         step: 30, // 30분 단위로 이동
         range: {
-            'min': 0,      // 00:00
-            'max': 1439    // 23:59
+            'min': 360,      // 06:00
+            'max': 1799    // 23:59 + 05:00
         },
         format: {
             to: function (value) {
@@ -127,20 +182,25 @@ $(document).ready(function() {
 
     // 4. Input 값을 직접 수정했을 때 슬라이더 움직이기
     timeOpenInput.addEventListener('change', function() {
-        timeSlider.noUiSlider.set([this.value, null]);
+        let minutes = timeToMinutes(this.value);
+        minutes = minutesToOur(minutes);
+        timeSlider.noUiSlider.set([minutes, null]);
     });
     timeCloseInput.addEventListener('change', function() {
-        timeSlider.noUiSlider.set([null, this.value]);
+        let minutes = timeToMinutes(this.value);
+        minutes = minutesToOur(minutes);
+        timeSlider.noUiSlider.set([null, minutes]);
     });
 });
 
+//지역 체크시 상세지역 보이도록
 function toggleDetailView(clickedCheckbox) {
-    const mainCheckboxes = document.querySelectorAll('input[name="main_category"]'); 
+    const mainCheckboxes = document.querySelectorAll('input[name="loc"]'); 
     const checkedRegions = Array.from(mainCheckboxes).filter(cb => cb.checked);
     
     // 1. 체크 해제 시 하위 체크박스 초기화
     if (!clickedCheckbox.checked) {
-        const detailGroupId = `details_${clickedCheckbox.value}`;
+        const detailGroupId = `details_${clickedCheckbox.id}`;
         const detailGroup = document.getElementById(detailGroupId);
         if (detailGroup) {
             // 해당 하위 그룹 내의 모든 체크박스 체크 해제
@@ -150,21 +210,57 @@ function toggleDetailView(clickedCheckbox) {
     }
 
     // 2. 모든 상세 그룹 숨기기
+    // 상세 그룹들 모두 숨기고 초기화
     const allDetailGroups = document.querySelectorAll('.detail-group');
-    allDetailGroups.forEach(group => group.classList.add('hidden'));
+    allDetailGroups.forEach(group => {
+        group.classList.add('hidden');
+        group.classList.remove('visible');
+        // 상세지역 체크박스 모두 체크 해제
+        group.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+    });
 
     // 3. 정확히 1개의 지역만 선택된 경우, 해당 상세 그룹 표시
     if (checkedRegions.length === 1) {
-        const uniqueCheckedValue = checkedRegions[0].value;
+        const uniqueCheckedValue = checkedRegions[0].id;
         const targetDetailGroupId = `details_${uniqueCheckedValue}`;
         const targetDetailGroup = document.getElementById(targetDetailGroupId);
         
         if (targetDetailGroup) {
             targetDetailGroup.classList.remove('hidden');
             targetDetailGroup.classList.add('visible'); // CSS visible 클래스 사용 가정
+
+            // 초기 상태: ‘전체’ 체크박스 기본 체크
+            const checkAll = targetDetailGroup.querySelector('input[type="checkbox"][value=""]');
+            if (checkAll) checkAll.checked = true;
         }
     }
     // 4. 0개 또는 2개 이상 선택 시 (else 경우), 모든 상세 그룹이 숨겨진 상태 유지
+}
+
+//상세지역 전체에서 다른 상세지역 체크시 전체(value="")는 체크해제
+function setupDetailCheckboxes() {
+    document.querySelectorAll('.detail-group').forEach(detailGroup => {
+        const checkAll = detailGroup.querySelector('input[type="checkbox"][value=""]');
+        const others = Array.from(detailGroup.querySelectorAll('input[type="checkbox"]')).filter(cb => cb !== checkAll);
+
+        if (!checkAll) return;
+
+        // 전체 체크박스 클릭 시 나머지 체크박스 해제
+        checkAll.addEventListener('change', function() {
+            if (this.checked) {
+                others.forEach(cb => cb.checked = false);
+            }
+        });
+
+        // 나머지 체크박스 클릭 시 전체 체크박스 해제
+        others.forEach(cb => {
+            cb.addEventListener('change', function() {
+                if (this.checked) {
+                    checkAll.checked = false;
+                }
+            });
+        });
+    });
 }
 </script>
 {% comment %} <div id="modal-filter" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true"> {% endcomment %}
@@ -192,7 +288,7 @@ function toggleDetailView(clickedCheckbox) {
           </div>
           <div class="filters">
             <div class="r_search-box">
-                <input type="text" placeholder="음식점 이름을 검색해보세요">
+                <input type="text" name="search" placeholder="음식점 이름을 검색해보세요">
             </div>
           </div>
         </div>
@@ -204,48 +300,48 @@ function toggleDetailView(clickedCheckbox) {
             <div class="filters">
                 <div class="multiple-buttons">
                     <!-- 지역 버튼들 -->
-                    <div class="checkbox-button"><input type="checkbox" id="zone_gn" name="main_category" value="seoul_gangnam" onchange="toggleDetailView(this)" /><label for="zone_gn">서울 강남</label></div>
-                    <div class="checkbox-button"><input type="checkbox" id="zone_gb" name="main_category" value="seoul_gangbuk" onchange="toggleDetailView(this)" /><label for="zone_gb">서울 강북</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="zone_gn" name="loc" value="seoul_gangnam" onchange="toggleDetailView(this)"/><label for="zone_gn">서울 강남</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="zone_gb" name="loc" value="seoul_gangbuk" onchange="toggleDetailView(this)"/><label for="zone_gb">서울 강북</label></div>
                     <!-- ...나머지 지역 버튼들... -->
 
                     <!-- 2. 하위 상세 지역 체크박스 그룹 (기본 숨김) -->
                     <div class="detail-checkbox-container">
                         <!-- 'seoul_gangnam' 지역에 해당하는 체크박스 그룹 -->
                         <!-- ID는 value 속성과 동일하게 매칭되어야 합니다. (details_ + value) -->
-                        <div id="details_seoul_gangnam" class="detail-group hidden">
-                            <label><input type="checkbox" checked> 서울 강남 전체</label>
-                            <label><input type="checkbox"> 가로수길/신사역</label>
-                            <label><input type="checkbox"> 압구정동/도산공원</label>
-                            <label><input type="checkbox"> 청담동/강남구청역</label>
-                            <label><input type="checkbox"> 논현동/영동시장</label>
-                            <label><input type="checkbox"> 삼성동/대치동</label>
-                            <label><input type="checkbox"> 선릉역/선정릉역</label>
-                            <label><input type="checkbox"> 역삼동</label>
-                            <label><input type="checkbox"> 도곡/양재/매봉</label>
-                            <label><input type="checkbox"> 강남역</label>
-                            <label><input type="checkbox"> 고속터미널/반포</label>
-                            <label><input type="checkbox"> 교대/남부터미널/서초</label>
-                            <label><input type="checkbox"> 동작구/대림/대방</label>
-                            <label><input type="checkbox"> 방배/사당/이수</label>
-                            <label><input type="checkbox"> 서래마을</label>
-                            <label><input type="checkbox"> 서울대/관악구</label>
-                            <label><input type="checkbox"> 가산디지털단지/구로</label>
-                            <label><input type="checkbox"> 영등포</label>
-                            <label><input type="checkbox"> 여의도</label>
-                            <label><input type="checkbox"> 김포/마곡</label>
-                            <label><input type="checkbox"> 목동/화곡</label>
-                            <label><input type="checkbox"> 개포/일원/수서</label>
-                            <label><input type="checkbox"> 가락/문정/오금/위례</label>
-                            <label><input type="checkbox"> 잠실/방이/올림픽공원</label>
-                            <label><input type="checkbox"> 석촌호수</label>
-                            <label><input type="checkbox"> 강동구</label>
+                        <div id="details_zone_gn" class="detail-group hidden">
+                            <label><input type="checkbox" name="loc_detail" value="" checked> 서울 강남 전체</label>
+                            <label><input type="checkbox" name="loc_detail" value="가로수길/신사역"> 가로수길/신사역</label>
+                            <label><input type="checkbox" name="loc_detail" value="압구정동/도산공원"> 압구정동/도산공원</label>
+                            <label><input type="checkbox" name="loc_detail" value="청담동/강남구청역"> 청담동/강남구청역</label>
+                            <label><input type="checkbox" name="loc_detail" value="논현동/영동시장"> 논현동/영동시장</label>
+                            <label><input type="checkbox" name="loc_detail" value="삼성동/대치동"> 삼성동/대치동</label>
+                            <label><input type="checkbox" name="loc_detail" value="선릉역/선정릉역"> 선릉역/선정릉역</label>
+                            <label><input type="checkbox" name="loc_detail" value="역삼동"> 역삼동</label>
+                            <label><input type="checkbox" name="loc_detail" value="도곡/양재/매봉"> 도곡/양재/매봉</label>
+                            <label><input type="checkbox" name="loc_detail" value="강남역"> 강남역</label>
+                            <label><input type="checkbox" name="loc_detail" value="고속터미널/반포"> 고속터미널/반포</label>
+                            <label><input type="checkbox" name="loc_detail" value="교대/남부터미널/서초"> 교대/남부터미널/서초</label>
+                            <label><input type="checkbox" name="loc_detail" value="동작구/대림/대방"> 동작구/대림/대방</label>
+                            <label><input type="checkbox" name="loc_detail" value="방배/사당/이수"> 방배/사당/이수</label>
+                            <label><input type="checkbox" name="loc_detail" value="서래마을"> 서래마을</label>
+                            <label><input type="checkbox" name="loc_detail" value="서울대/관악구"> 서울대/관악구</label>
+                            <label><input type="checkbox" name="loc_detail" value="가산디지털단지/구로"> 가산디지털단지/구로</label>
+                            <label><input type="checkbox" name="loc_detail" value="영등포"> 영등포</label>
+                            <label><input type="checkbox" name="loc_detail" value="여의도"> 여의도</label>
+                            <label><input type="checkbox" name="loc_detail" value="김포/마곡"> 김포/마곡</label>
+                            <label><input type="checkbox" name="loc_detail" value="목동/화곡"> 목동/화곡</label>
+                            <label><input type="checkbox" name="loc_detail" value="개포/일원/수서"> 개포/일원/수서</label>
+                            <label><input type="checkbox" name="loc_detail" value="가락/문정/오금/위례"> 가락/문정/오금/위례</label>
+                            <label><input type="checkbox" name="loc_detail" value="잠실/방이/올림픽공원"> 잠실/방이/올림픽공원</label>
+                            <label><input type="checkbox" name="loc_detail" value="석촌호수"> 석촌호수</label>
+                            <label><input type="checkbox" name="loc_detail" value="강동구"> 강동구</label>
                         </div>
 
                         <!-- 'seoul_gangbuk' 지역에 해당하는 체크박스 그룹 -->
-                        <div id="details_seoul_gangbuk" class="detail-group hidden">
-                            <label><input type="checkbox"> 서울 강북 전체</label>
-                            <label><input type="checkbox"> 노원/강북</label>
-                            <label><input type="checkbox"> 동대문/성동</label>
+                        <div id="details_zone_gb" class="detail-group hidden">
+                            <label><input type="checkbox" name="loc_detail" value=""> 서울 강북 전체</label>
+                            <label><input type="checkbox" name="loc_detail" value="노원/강북"> 노원/강북</label>
+                            <label><input type="checkbox" name="loc_detail" value="동대문/성동"> 동대문/성동</label>
                             <!-- ... 강북 하위 지역들 ... -->
                         </div>
                     </div>
@@ -260,20 +356,20 @@ function toggleDetailView(clickedCheckbox) {
             <div class="title-bar"><div class="title">음식 종류</div></div>
             <div class="filters">
                 <div class="multiple-buttons">
-                    <div class="checkbox-button"><input type="checkbox" id="foodtype_pasta" value="137" /><label for="foodtype_pasta">파스타</label></div>
-                    <div class="checkbox-button"><input type="checkbox" id="foodtype_pizza" value="140" /><label for="foodtype_pizza">피자</label></div>
-                    <div class="checkbox-button"><input type="checkbox" id="foodtype_ramen" value="149" /><label for="foodtype_ramen">라멘</label></div>
-                    <div class="checkbox-button"><input type="checkbox" id="foodtype_jangeo" value="289" /><label for="foodtype_jangeo">장어</label></div>
-                    <div class="checkbox-button"><input type="checkbox" id="foodtype_hanjeongsik" value="466" /><label for="foodtype_hanjeongsik">한정식</label></div>
-                    <div class="checkbox-button"><input type="checkbox" id="foodtype_hanuomakase" value="520" /><label for="foodtype_hanuomakase">한우오마카세</label></div>
-                    <div class="checkbox-button"><input type="checkbox" id="foodtype_bangeo" value="626" /><label for="foodtype_bangeo">방어</label></div>
-                    <div class="checkbox-button"><input type="checkbox" id="foodtype_vietnamese" value="98" /><label for="foodtype_vietnamese">베트남식</label></div>
-                    <div class="checkbox-button"><input type="checkbox" id="foodtype_cake" value="60" /><label for="foodtype_cake">케이크</label></div>
-                    <div class="checkbox-button"><input type="checkbox" id="foodtype_sushi" value="152" /><label for="foodtype_sushi">스시</label></div>
-                    <div class="checkbox-button"><input type="checkbox" id="foodtype_coffee" value="58" /><label for="foodtype_coffee">커피전문점</label></div>
-                    <div class="checkbox-button"><input type="checkbox" id="foodtype_steak" value="13" /><label for="foodtype_steak">스테이크</label></div>
-                    <div class="checkbox-button"><input type="checkbox" id="foodtype_dwaeigalb" value="386" /><label for="foodtype_dwaeigalb">돼지갈비</label></div>
-                    <div class="checkbox-button"><input type="checkbox" id="foodtype_kalguksu" value="267" /><label for="foodtype_kalguksu">칼국수</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_pasta" name="ftype" value="파스타" /><label for="foodtype_pasta">파스타</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_pizza" name="ftype" value="피자" /><label for="foodtype_pizza">피자</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_ramen" name="ftype" value="라멘" /><label for="foodtype_ramen">라멘</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_jangeo" name="ftype" value="장어" /><label for="foodtype_jangeo">장어</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_hanjeongsik" name="ftype" value="한정식" /><label for="foodtype_hanjeongsik">한정식</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_hanuomakase" name="ftype" value="한우오마카세" /><label for="foodtype_hanuomakase">한우오마카세</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_bangeo" name="ftype" value="방어" /><label for="foodtype_bangeo">방어</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_vietnamese" name="ftype" value="베트남식" /><label for="foodtype_vietnamese">베트남식</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_cake" name="ftype" value="케이크" /><label for="foodtype_cake">케이크</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_sushi" name="ftype" value="스시" /><label for="foodtype_sushi">스시</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_coffee" name="ftype" value="커피전문점" /><label for="foodtype_coffee">커피전문점</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_steak" name="ftype" value="스테이크" /><label for="foodtype_steak">스테이크</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_dwaeigalb" name="ftype" value="돼지갈비" /><label for="foodtype_dwaeigalb">돼지갈비</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="foodtype_kalguksu" name="ftype" value="칼국수" /><label for="foodtype_kalguksu">칼국수</label></div>
                 </div>
             </div>
         </div>
@@ -290,7 +386,7 @@ function toggleDetailView(clickedCheckbox) {
                         <label for="price-min" style="display: block; font-size: 12px; color: #999;">최저</label>
                         <div style="position: relative;">
                             <span style="position: absolute; left: 12px; top: 18px; color: #555;">₩</span>
-                            <input type="text" id="price-min" class="form-control" value="0" style="padding-left: 25px;">
+                            <input type="text" id="price-min" name="price_min" class="form-control" value="0" style="padding-left: 25px;">
                         </div>
                     </div>
                     <span style="margin: 0 10px; line-height: 40px; color: #999;">-</span>
@@ -298,7 +394,7 @@ function toggleDetailView(clickedCheckbox) {
                         <label for="price-max" style="display: block; font-size: 12px; color: #999;">최고</label>
                         <div style="position: relative;">
                             <span style="position: absolute; left: 12px; top: 18px; color: #555;">₩</span>
-                            <input type="text" id="price-max" class="form-control" value="1000000" style="padding-left: 25px;">
+                            <input type="text" id="price-max" name="price-max" class="form-control" value="1000000" style="padding-left: 25px;">
                         </div>
                     </div>
                 </div>
@@ -316,32 +412,55 @@ function toggleDetailView(clickedCheckbox) {
             <div class="filters">
                 <!-- 요일 선택 버튼 -->
                 <div class="multiple-buttons weekdays" style="margin-bottom: 20px;">
-                    <div class="checkbox-button"><input type="checkbox" id="day_mon" /><label for="day_mon">월</label></div>
-                    <div class="checkbox-button"><input type="checkbox" id="day_tue" /><label for="day_tue">화</label></div>
-                    <div class="checkbox-button"><input type="checkbox" id="day_wed" /><label for="day_wed">수</label></div>
-                    <div class="checkbox-button"><input type="checkbox" id="day_thu" /><label for="day_thu">목</label></div>
-                    <div class="checkbox-button"><input type="checkbox" id="day_fri" /><label for="day_fri">금</label></div>
-                    <div class="checkbox-button"><input type="checkbox" id="day_sat" /><label for="day_sat">토</label></div>
-                    <div class="checkbox-button"><input type="checkbox" id="day_sun" /><label for="day_sun">일</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="day_mon" name="weeks" value="월"/><label for="day_mon">월</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="day_tue" name="weeks" value="화"/><label for="day_tue">화</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="day_wed" name="weeks" value="수"/><label for="day_wed">수</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="day_thu" name="weeks" value="목"/><label for="day_thu">목</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="day_fri" name="weeks" value="금"/><label for="day_fri">금</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="day_sat" name="weeks" value="토"/><label for="day_sat">토</label></div>
+                    <div class="checkbox-button"><input type="checkbox" id="day_sun" name="weeks" value="일"/><label for="day_sun">일</label></div>
                 </div>
 
                 <!-- 시간 입력 및 슬라이더 -->
                 <div class="time-range-inputs">
                     <div style="display: flex; align-items: center;">
                         <span style="margin-right: 5px; color: #f7b733; font-size: 18px;">☀</span>
-                        <input type="text" id="time-open" class="form-control" value="00:00" style="width: 80px;">
+                        <input type="text" id="time-open" class="form-control" name="open_time" value="06:00" style="width: 80px;">
                     </div>
                     <span style="margin: 0 10px; line-height: 40px; color: #999;">-</span>
                     <div style="display: flex; align-items: center;">
-                         <input type="text" id="time-close" class="form-control" value="24:00" style="width: 80px;">
+                         <input type="text" id="time-close" class="form-control" name="close_time" value="05:59" style="width: 80px;">
                          <span style="margin-left: 5px; color: #f7b733; font-size: 18px;">☾</span>
                     </div>
                 </div>
                 
                 <!-- 시간 슬라이더 위치 (JavaScript로 구현 필요) -->
-                <div id="time-slider-range" class="noUi-target"></div>
+                {% comment %} <div id="time-slider-range" class="noUi-target"></div> {% endcomment %}
+                <div class="time-slider-wrapper">
+                    <!-- 시간 슬라이더 위치 (JavaScript로 구현 필요) -->
+                    <div id="time-slider-range"></div>
+
+                    <!-- 마커 -->
+                    <div class="time-markers">
+                        <div class="marker" style="left:0%">
+                            <div class="line"></div>
+                            <div class="label">☀ 06:00</div>
+                        </div>
+
+                        <div class="marker" id="midnight-marker" style="left:75%">
+                            <div class="line"></div>
+                            <div class="label">🌙 24:00</div>
+                        </div>
+
+                        <div class="marker" style="left:100%">
+                            <div class="line"></div>
+                            <div class="label">☾ 05:59</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+        <br>
         <hr>
 
       </div>

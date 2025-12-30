@@ -34,10 +34,11 @@
     color: #fff;
 }*/
 .r_search-box {
-    display: flex;
-    gap: 10px;
     position: relative; /* 자식 요소인 아이콘의 기준점이 됩니다 */
-    align-items: center; /* 세로 중앙 정렬 보조 */
+}
+
+.r_search-box button{
+    cursor: pointer;
 }
 
 /* 2. 아이콘 위치 최적화 */
@@ -73,6 +74,46 @@
 </style>
 {% endblock css %}
 {% block script %}
+<script>
+    function searchData() {
+        let url = "/restaurants/reslist";
+        location.href = url+"?"+frm;
+        //location.href = url+"?"+encodeURIComponent(frm);
+        /*$.ajax({
+            url:url,
+            type: 'GET',
+            dataType:'json',
+            data:$("#searchFrm").serialize(),
+            success: function(data) {
+                location.href="/restaurants/rlist";
+            },
+            error: function(xhr, errMsg, err) {
+                //console.error("서버 에러 : ", errMsg);
+                alert("서버에러");
+            }
+        });*/
+    }
+
+    let frm = {};
+    $(document).ready(function() {
+        //검색필터 적용
+        $(document).on("click", ".btn-apply-filter", function () {
+            frm = $("#searchFrm").serialize();
+
+            // 아이콘 변경
+            $("#filterBtn img").attr("src", "/static/images/home/icon_filter_on.png");
+
+            // 팝업 닫기
+            $(".modal").hide();
+            $("body").removeClass("modal-open");
+        });
+
+        //검색버튼 클릭
+        $('#filterBtn').on('click', function(){
+            SearchFilterModal('modal-filter', 'filterBtn', frm);
+        });
+    });
+</script>
 {% endblock script %}
 {% block body %}
 <div id='header_bg'>
@@ -83,18 +124,16 @@
     <h1 class="r_logo">🍽️ 미식 가이드</h1>
 
     <div class="r_search-box">
-        <a class="filter-icon-button" data-toggle="modal" data-target="#modal-filter" onclick="SearchFilterModal('modal-filter');">
+        {% comment %} <a class="filter-icon-button" data-toggle="modal" data-target="#modal-filter" onclick="SearchFilterModal('modal-filter',frm);"> {% endcomment %}
+        <a class="filter-icon-button" data-toggle="modal" data-target="#modal-filter" id="filterBtn">
             <img src="/static/images/home/icon_filter_off.png" alt="필터 아이콘">
         </a>
         <input type="text" placeholder="음식점 이름을 검색해보세요">
-        <button>검색</button>
+        <button onclick="searchData();">검색</button>
     </div>
 </header>
 <!-- Modal Body -->
-<div id="modal-filter" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalTitle"></div>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<form id="searchFrm" name="searchFrm">
+    <div id="modal-filter" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalTitle"></div>
+</form>
 {% endblock body %}
