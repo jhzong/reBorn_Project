@@ -3,6 +3,7 @@
 {% comment %} css 작업은 여기서 하세요!! {% endcomment %}
 {% block css %}
 <link rel='stylesheet' type="text/css" href="/static/css/magazine.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css" integrity="sha512-10/jx2EXwxxWqCLX/hHth/vu2KY3jCF70dCQB8TSgNjbCVAC/8vai53GfMDrO2Emgwccf2pJqxct9ehpzG+MTw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 {% endblock css %}
 
 {% comment %} script 작업은 여기서 하세요!! {% endcomment %}
@@ -13,27 +14,29 @@
 {% comment %} body 작업은 여기서 하세요!! {% endcomment %}
 {% block body %}
 
-    <div class='magazine-header_bg'>
+<div id='mz-body'>
+
+    <div id='mz-header'>
         <form name='searchFrm' action='/magazine/mlist/' method='get'>
         {% csrf_token %}
-        <div class='magazine-header'>
-            <div class='search-title'>
+        <div id='mz-header-bg'>
+            <div id='mz-htitle'>
                 Reborn 매거진
             </div>
-            <div class="search-container">
-                <div class="search-box">
-                    <span class="search-icon"><img src='/static/images/magazine/search_icon.png'></span>
-                    <input type="text" name='search' placeholder="매거진 내에서 검색해보세요."/>
+            <div id='mz-hsearch'>
+                <div class='mz-hsearch-box'>
+                    <span class='mz-hsearch-icon'><img src='/static/images/magazine/search_icon.png'></span>
+                    <input type='text' name='search' placeholder="매거진 내에서 검색해보세요."/>
                 </div>
-                <button class="search-btn" name='search-btn' onclick='searchBtn()'>검색</button>
+                <button class='mz-hsearch-btn' name='search-btn' onclick='searchBtn()'>검색</button>
             </div>
         </div>
         </form>
     </div>
 
-    <div class='magazine-body'>
+    <div id='mz-list'>
 
-        <div class='magazine-category'>
+        <div id='mz-lcategory'>
             <select id='category' name='category' onchange="selectBtn(this.value)">
                 <option value=''>전체</option>
                 {% for code in qs_code %}
@@ -50,8 +53,8 @@
         <ul>
 
             {% for l in list %}
-            <li class='magazine_item'>
-                <a href='#'>
+            <li class='mz_litem'>
+                <a href='/magazine/mview/{{l.mno}}/'>
                     <figure>
                         <div>
                             {% if l.mfile %}
@@ -76,7 +79,7 @@
             <!-- 나머지 빈공란 출력 -->
             {% if etc_count > 0 %}
             {% for l in "x"|rjust:etc_count %}
-                <li class='magazine_item'></li>
+                <li class='mz_litem'></li>
             {% endfor %}
             {% endif %}
 
@@ -103,6 +106,7 @@
     </div>
 
     <!-- 페이징 start -->
+    {% if list.has_other_pages %}
     <div class="btnAreaList">
         <div class="allPageMoving1">
             {% if list.has_previous %}
@@ -136,11 +140,12 @@
                 <a class="n"><img src="/static/images/common/btn_next2.gif" alt="마지막페이지로"/></a>
             {% endif %}
 
-        </div>
-        <!-- 페이징 end -->
-
+        </div> <!-- 페이징 end -->
     </div>  
-    
+    {% endif %}    
+
+</div> <!-- mz-body -->
+
 {% endblock body %}
 
 
