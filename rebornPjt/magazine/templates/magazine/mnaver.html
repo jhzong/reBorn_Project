@@ -37,7 +37,8 @@
         <!-- 탬플릿 필터 -->
         <ul>
             {% for n in nlist %}
-            <li>{{n.title|cut:'<b>'|cut:'</b>'}}</li>
+            {% comment %} <li>{{n.title|cut:'<b>'|cut:'</b>'|cut:'&lt;'|cut:'&gt;'}}</li> {% endcomment %}
+            <li>{{n.title}}</li>
             {% endfor %}
         </ul>         
         <!-- 매거진 출력 end -->

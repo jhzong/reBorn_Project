@@ -30,7 +30,7 @@ def mnaver(request):
     
     dData = json.loads(response_body)
     nlist = dData['items']
-       
+    nlist.title.strip("<b>""</b>")
     context = {'nlist':nlist}
     return render(request,'magazine/mnaver.html', context)
 
