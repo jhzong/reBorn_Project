@@ -17,28 +17,33 @@
 <div id='mz-body'>
 
     <div id='mz-header'>
+        <form name='searchFrm' action='/magazine/mlist/' method='get'>
+        {% csrf_token %}
         <div id='mz-header-bg'>
             <div id='mz-htitle'>
                 NAVER 매거진
             </div>
         </div>
+        </form>
     </div>
 
-    <div id='mz-list'>
+    <div id='n-list'>
 
         <div id='mz-lcategory'>
-            <a href='/magazine/mlist/'><span>REBORN 매거진</span></a>
+            <a href='/magazine/mlist/'><span>Reborn 매거진</span></a>
         </div>
 
         <!-- 매거진 출력 start -->
+        <!-- 탬플릿 필터 -->
         <ul>
             {% for n in nlist %}
-            <li class='n_litem'>
-            </li>
+            <li>{{n.title|cut:'<b>'|cut:'</b>'}}</li>
             {% endfor %}
-         </ul>         
+        </ul>         
         <!-- 매거진 출력 end -->
+
     </div>
+
 </div> <!-- mz-body -->
 
 {% endblock body %}

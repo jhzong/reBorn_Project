@@ -15,24 +15,25 @@ def mnaver(request):
     client_id = "j7KaOMGirpd_EoxbjKDB"
     client_secret = "98WTnc2agN"
     encText = urllib.parse.quote("음식점매거진")
-    url = "https://openapi.naver.com/v1/search/blog?query=" + encText # JSON 결과
+    url = "https://openapi.naver.com/v1/search/blog.json?query=" + encText # JSON 결과
     # url = "https://openapi.naver.com/v1/search/blog.xml?query=" + encText # XML 결과
-    request = urllib.request.Request(url)
-    request.add_header("X-Naver-Client-Id",client_id)
-    request.add_header("X-Naver-Client-Secret",client_secret)
-    response = urllib.request.urlopen(request)
+    requestUr = urllib.request.Request(url)
+    requestUr.add_header("X-Naver-Client-Id",client_id)
+    requestUr.add_header("X-Naver-Client-Secret",client_secret)
+    response = urllib.request.urlopen(requestUr)
     rescode = response.getcode()
     if(rescode==200):
         response_body = response.read()
         print(response_body.decode('utf-8'))
     else:
         print("Error Code:" + rescode)
-        
+    
     dData = json.loads(response_body)
     nlist = dData['items']
-        
+       
     context = {'nlist':nlist}
     return render(request,'magazine/mnaver.html', context)
+
 
 # def mlike(request):
     
