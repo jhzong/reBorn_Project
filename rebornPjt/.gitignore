@@ -1,6 +1,7 @@
 # git파일 업로드 방지(깃허브 올리고 싶지 않은 파일 추가)
 /logs/*
 launch.json
+secret/api__func.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
