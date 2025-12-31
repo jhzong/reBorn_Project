@@ -26,4 +26,4 @@ class MyUser(models.Model):
     cr_dt = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.mem_id},{self.nick_nm}'
+        return f'{self.mem_id},{self.mem_nm},{self.email},{self.nick_nm}'

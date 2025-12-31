@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.db.models import F,Q,Sum,Count
-<<<<<<< HEAD
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from magazine.models import Magazine, MagazineCode
@@ -35,30 +34,27 @@ def mnaver(request):
     context = {'nlist':nlist}
     return render(request,'magazine/mnaver.html', context)
 
-def mlike(request):
+# def mlike(request):
     
-    if request.method == 'POST':
+#     if request.method == 'POST':
         
-        mno = request.POST.get('mno')
-        qs_magazine = Magazine.objects.get(mno=mno)
+#         mno = request.POST.get('mno')
+#         qs_magazine = Magazine.objects.get(mno=mno)
         
-        id = request.session['session_id']
-        qs_myuser = MyUser.objects.get(mem_id=id)
+#         id = request.session['session_id']
+#         qs_myuser = MyUser.objects.get(mem_id=id)
         
-        if qs_magazine.like.filter(pk=qs_myuser.mem_id).exists():
-            qs_magazine.like.remove(qs_myuser)
-            like_chk = 0
-        else:
-            qs_magazine.like.add(qs_myuser)
-            like_chk = 1
+#         if qs_magazine.like.filter(pk=qs_myuser.mem_id).exists():
+#             qs_magazine.like.remove(qs_myuser)
+#             like_chk = 0
+#         else:
+#             qs_magazine.like.add(qs_myuser)
+#             like_chk = 1
         
-        like_count = qs_magazine.like.count()
+#         like_count = qs_magazine.like.count()
     
-    context = {'result':'성공','like_chk':like_chk,'like_count':like_count}
-    return JsonResponse(context)
-=======
-from magazine.models import Magazine, Magazine_code
->>>>>>> 9e24702e16192b0a198b0ff9b6c1082391e46742
+#     context = {'result':'성공','like_chk':like_chk,'like_count':like_count}
+#     return JsonResponse(context)
 
 
 def mview(request,mno):
@@ -79,7 +75,7 @@ def mlist(request):
     # print('category : ',category,'search : ',search)
     
     # 매거진 코드 정보
-    qs_code = Magazine_code.objects.all()
+    qs_code = MagazineCode.objects.all()
 
     # 매거진 리스트
     if not category: # 공란 처리
@@ -90,8 +86,8 @@ def mlist(request):
             qs = Magazine.objects.filter(Q(mtitle__contains=search)|Q(mcontent__contains=search))
 
     else:
-        qs_category = Magazine_code.objects.get(mtype=category)
-        qs = Magazine.objects.filter(magazine_code=qs_category).order_by('-mdate')
+        qs_category = MagazineCode.objects.get(mtype=category)
+        qs = Magazine.objects.filter(magazinecode=qs_category).order_by('-mdate')
 
     # 패이징
     page = int(request.GET.get('page',1))
