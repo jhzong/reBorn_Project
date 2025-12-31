@@ -1,4 +1,5 @@
 from django.db import models
+from member.models import MyUser
 
 # Create your models here.
 
@@ -15,10 +16,13 @@ class Magazine(models.Model):
     mno = models.AutoField(primary_key=True)
     mtitle = models.CharField(max_length=1000)
     mcontent = models.TextField()
+    mthumbnail = models.TextField(null=True)
     magazinecode = models.ForeignKey(MagazineCode,on_delete=models.SET_NULL,null=True)
     mfile = models.FileField(default='',null=True,blank=True)
     mhit = models.IntegerField(default=0)
     mdate = models.DateTimeField(auto_now=True)
+    
+    mlike = models.ManyToManyField(MyUser,related_name='like_myuser',null=True,blank=True)
     
     def __str__(self):
         return f'{self.mno},{self.mtitle},{self.magazinecode}'

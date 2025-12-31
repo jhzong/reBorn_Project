@@ -1,7 +1,60 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.db.models import F,Q,Sum,Count
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from magazine.models import Magazine, MagazineCode
+from member.models import MyUser
+
+import json
+import urllib.request
+
+
+def mnaver(request):
+    
+    client_id = "j7KaOMGirpd_EoxbjKDB"
+    client_secret = "98WTnc2agN"
+    encText = urllib.parse.quote("음식점매거진")
+    url = "https://openapi.naver.com/v1/search/blog?query=" + encText # JSON 결과
+    # url = "https://openapi.naver.com/v1/search/blog.xml?query=" + encText # XML 결과
+    request = urllib.request.Request(url)
+    request.add_header("X-Naver-Client-Id",client_id)
+    request.add_header("X-Naver-Client-Secret",client_secret)
+    response = urllib.request.urlopen(request)
+    rescode = response.getcode()
+    if(rescode==200):
+        response_body = response.read()
+        print(response_body.decode('utf-8'))
+    else:
+        print("Error Code:" + rescode)
+        
+    dData = json.loads(response_body)
+    nlist = dData['items']
+        
+    context = {'nlist':nlist}
+    return render(request,'magazine/mnaver.html', context)
+
+def mlike(request):
+    
+    if request.method == 'POST':
+        
+        mno = request.POST.get('mno')
+        qs_magazine = Magazine.objects.get(mno=mno)
+        
+        id = request.session['session_id']
+        qs_myuser = MyUser.objects.get(mem_id=id)
+        
+        if qs_magazine.like.filter(pk=qs_myuser.mem_id).exists():
+            qs_magazine.like.remove(qs_myuser)
+            like_chk = 0
+        else:
+            qs_magazine.like.add(qs_myuser)
+            like_chk = 1
+        
+        like_count = qs_magazine.like.count()
+    
+    context = {'result':'성공','like_chk':like_chk,'like_count':like_count}
+    return JsonResponse(context)
 
 
 def mview(request,mno):
@@ -11,7 +64,7 @@ def mview(request,mno):
     qs_pre = Magazine.objects.filter(mdate__lt=qs.mdate).order_by('-mdate').first()
     qs_next = Magazine.objects.filter(mdate__gt=qs.mdate).order_by('mdate').first()
     
-    context = {'mno':mno,'mz':qs,'pre':qs_pre,'next':qs_next}
+    context = {'mz':qs,'pre':qs_pre,'next':qs_next}
     return render(request,'magazine/mview.html',context)
 
 
