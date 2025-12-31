@@ -39,6 +39,16 @@
         <div class="join-container">
             <form id="join-form-final" method="POST" action="{% url 'member:join3' %}">
                 {% csrf_token %}
+
+                {% comment %} 
+                <input type="hidden" name="mem_id" value="{{ mid }}">
+                <input type="hidden" name="mem_pw" value="{{ mpw }}">
+                <input type="hidden" name="mem_nm" value="{{ mnm }}">
+                <input type="hidden" name="nick_nm" value="{{ nnm }}">
+                <input type="hidden" name="email" value="{{ eml }}">
+                <input type="hidden" name="phone_number" value="{{ phn }}"> 
+                {% endcomment %}
+
                 <div class="join-content">
                     <div class="step-indicator">
                         <span class="step">01</span>

@@ -45,15 +45,20 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'rPjt.urls'
-
+BASE_DIR = Path(__file__).resolve().parent.parent
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATE_DIR],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'), # 프로젝트 루트의 templates
+            os.path.join(BASE_DIR, 'home', 'templates'), # 혹시 home 앱 안에 있다면
+            os.path.join(BASE_DIR, 'member', 'templates'), # 혹시 member 앱 안에 있다면
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -118,3 +123,6 @@ STATICFILES_DIRS = [
 # url정보가 /media로 들어오면 media폴더로 연결
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+SESSION_SAVE_EVERY_REQUEST = True

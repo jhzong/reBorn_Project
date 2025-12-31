@@ -58,7 +58,8 @@
     .input-box {
         width: 90%;
         padding: 12px;
-        margin: 5px 0;
+        margin: 5px;
+        margin-bottom: 4px;
         border: 1px solid #ccc;
         font-size: 14px;
         font-weight: 400;

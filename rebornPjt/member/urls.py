@@ -8,7 +8,7 @@ urlpatterns = [
     path('join1/', views.join1, name='join1'),
     path('join2/', views.join2, name='join2'),
     path('join3/', views.join3, name='join3'),
-    
+    path('logout/', views.logout_view, name='logout'),
     
     
     

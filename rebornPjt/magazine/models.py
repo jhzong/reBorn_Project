@@ -3,7 +3,7 @@ from member.models import MyUser
 
 # Create your models here.
 
-class MagazineCode(models.Model):
+class Magazine_code(models.Model):
     mtype = models.CharField(max_length=2)
     mtype_desc = models.CharField(max_length=100)
     mdate = models.DateTimeField(auto_now=True)
@@ -16,8 +16,12 @@ class Magazine(models.Model):
     mno = models.AutoField(primary_key=True)
     mtitle = models.CharField(max_length=1000)
     mcontent = models.TextField()
+<<<<<<< HEAD
     mthumbnail = models.TextField(null=True)
     magazinecode = models.ForeignKey(MagazineCode,on_delete=models.SET_NULL,null=True)
+=======
+    magazine_code = models.ForeignKey(Magazine_code,on_delete=models.SET_NULL,null=True)
+>>>>>>> 9e24702e16192b0a198b0ff9b6c1082391e46742
     mfile = models.FileField(default='',null=True,blank=True)
     mhit = models.IntegerField(default=0)
     mdate = models.DateTimeField(auto_now=True)
@@ -25,6 +29,6 @@ class Magazine(models.Model):
     mlike = models.ManyToManyField(MyUser,related_name='like_myuser',null=True,blank=True)
     
     def __str__(self):
-        return f'{self.mno},{self.mtitle},{self.magazinecode}'
+        return f'{self.mno},{self.mtitle},{self.magazine_code}'
     
 

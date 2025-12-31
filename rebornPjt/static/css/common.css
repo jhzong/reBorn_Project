@@ -197,13 +197,14 @@ ul {
 .logout-btn {
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 0.9rem;
+    gap: 5px;
+    font-size: 0.75rem;
     color: #666; /* 기본 글자색 */
-    padding: 5px 12px;
+    padding: 3px 7px;
     border: 1px solid #ddd;
     border-radius: 4px;
     transition: all 0.2s ease;
+    margin-top: 2px;
 }
 
 .logout-btn:hover {
@@ -211,6 +212,22 @@ ul {
     border-color: #007bff;
     color: #007bff;
 }
+
+/* 모바일 로그아웃 버튼 70% 축소 스타일 */
+.small-logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;            /* 아이콘과 글자 사이 간격 */
+    font-size: 0.85rem;  /* 글자 크기 축소 */
+    padding: 5px 10px;   /* 버튼 주변 여백 축소 */
+    opacity: 0.8;        /* 너무 튀지 않게 살짝 흐리게 (선택사항) */
+}
+
+.small-logout-btn svg {
+    vertical-align: middle;
+}
+
+
 /* 기본적으로(데스크톱) 메뉴 안의 로그아웃은 숨김 */
 .nav-links li.mobile-logout {
     display: none;
