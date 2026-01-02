@@ -72,6 +72,25 @@
     border-radius: 8px;
     border: 1px solid #ddd;
 }
+.filter-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    height: 16px;
+    background-color: #007bff;;
+    border-radius: 16px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 10px;
+    padding: 0px 5px;
+    text-align: center;
+}
+.filter-count.off {
+    display: none;
+}
+.filter-count.on>*.on {
+    display: inline-block;
+}
 </style>
 {% endblock css %}
 {% block script %}
@@ -108,6 +127,7 @@
         let animationID;
         let sliderWidth = 0;
         let containerWidth = 0;
+        let moved = false;
 
         // 초기 설정
         window.addEventListener('load', () => {
@@ -116,7 +136,7 @@
         });
 
         sliderTrack.addEventListener('mousedown', dragStart);
-        sliderTrack.addEventListener('touchstart', dragStart);
+        sliderTrack.addEventListener('touchstart', dragMobileStart);
 
         sliderTrack.addEventListener('mouseup', dragEnd);
         sliderTrack.addEventListener('touchend', dragEnd);
@@ -124,41 +144,69 @@
         sliderTrack.addEventListener('mouseleave', dragEnd);
 
         sliderTrack.addEventListener('mousemove', dragMove);
-        sliderTrack.addEventListener('touchmove', dragMove);
+        sliderTrack.addEventListener('touchmove', dragMobileMove);
 
         function dragStart(e) {
-        isDragging = true;
-        startX = getPositionX(e);
-        sliderTrack.classList.add('dragging');
+            e.preventDefault(); // PC 드래그 핵심
+            isDragging = true;
+            moved = false;
+            startX = getPositionX(e);
+            sliderTrack.classList.add('dragging');
             animationID = requestAnimationFrame(animation);
         }
 
+        function dragMobileStart(e) {
+            isDragging = true;
+            moved = false;
+            startX = getPositionX(e);
+            sliderTrack.classList.add('dragging');
+            animationID = requestAnimationFrame(animation);
+        }
+
+
         function dragEnd() {
-        isDragging = false;
-        prevTranslate = currentTranslate;
-        sliderTrack.classList.remove('dragging');
-        cancelAnimationFrame(animationID);
-        checkBounds();
+            isDragging = false;
+            prevTranslate = currentTranslate;
+            sliderTrack.classList.remove('dragging');
+            cancelAnimationFrame(animationID);
+            checkBounds();
         }
 
         function dragMove(e) {
-        if (!isDragging) return;
-        const currentPosition = getPositionX(e);
-        const diff = currentPosition - startX;
-        currentTranslate = prevTranslate + diff;
+            if (!isDragging) return;
+            if (e.type === 'mousedown') {
+                e.preventDefault(); // PC에서만
+            }
+            const currentPosition = getPositionX(e);
+            const diff = currentPosition - startX;
+            if (Math.abs(diff) > 5) {
+                moved = true; // 클릭X
+            }
+            currentTranslate = prevTranslate + diff;
         }
 
+        function dragMobileMove(e) {
+            if (!isDragging) return;
+            const currentPosition = getPositionX(e);
+            const diff = currentPosition - startX;
+            if (Math.abs(diff) > 5) {
+                moved = true; // 클릭X
+            }
+            currentTranslate = prevTranslate + diff;
+        }
+
+
         function getPositionX(event) {
-        return event.type.includes('mouse') ? event.pageX : event.touches[0].clientX;
+            return event.type.includes('mouse') ? event.pageX : event.touches[0].clientX;
         }
 
         function animation() {
         setSliderPosition();
-        if (isDragging) requestAnimationFrame(animation);
+            if (isDragging) requestAnimationFrame(animation);
         }
 
         function setSliderPosition() {
-        sliderTrack.style.transform = `translateX(${currentTranslate}px)`;
+            sliderTrack.style.transform = `translateX(${currentTranslate}px)`;
         }
 
         // 경계 체크 (슬라이더가 너무 좌우로 움직이지 않게 제한)
@@ -170,24 +218,31 @@
             currentTranslate = -(sliderWidth - containerWidth);
         }
         prevTranslate = currentTranslate;
-        setSliderPosition();
+            setSliderPosition();
         }
+
+        sliderTrack.addEventListener('click', function (e) {
+            if (moved) {
+                e.preventDefault();   // 링크 이동 막기
+                e.stopPropagation();
+            }
+        });
 
         // 좌우 버튼 클릭 이벤트
         prevBtn.addEventListener('click', () => {
-        currentTranslate += 160; // 한 칸씩 이동 (아이템 너비 + gap)
-        if (currentTranslate > 0) currentTranslate = 0;
-        prevTranslate = currentTranslate;
-        setSliderPosition();
+            currentTranslate += 165; // 한 칸씩 이동 (아이템 너비 + gap)
+            if (currentTranslate > 0) currentTranslate = 0;
+            prevTranslate = currentTranslate;
+            setSliderPosition();
         });
 
         nextBtn.addEventListener('click', () => {
-        currentTranslate -= 160;
-        if (Math.abs(currentTranslate) > sliderWidth - containerWidth) {
-            currentTranslate = -(sliderWidth - containerWidth);
-        }
-        prevTranslate = currentTranslate;
-        setSliderPosition();
+            currentTranslate -= 165;
+            if (Math.abs(currentTranslate) > sliderWidth - containerWidth) {
+                currentTranslate = -(sliderWidth - containerWidth);
+            }
+            prevTranslate = currentTranslate;
+            setSliderPosition();
         });
     });
 
@@ -197,8 +252,13 @@
         $(document).on("click", ".btn-apply-filter", function () {
             frm = $("#searchFrm").serialize();
 
+            count = updateFilterCount();    //10개이상인 경우 원형태가 늘어나서 이상함.
             // 아이콘 변경
-            $("#filterBtn img").attr("src", "/static/images/home/icon_filter_on.png");
+            if(count==0){
+                $(".filterBtnImg").attr("src", "/static/images/home/icon_filter_off.png");
+            }else if(count>0) {
+                $(".filterBtnImg").attr("src", "/static/images/home/icon_filter_on.png");
+            }
 
             // 팝업 닫기
             $(".modal").hide();
@@ -223,42 +283,45 @@
     <div class="r_search-box">
         {% comment %} <a class="filter-icon-button" data-toggle="modal" data-target="#modal-filter" onclick="SearchFilterModal('modal-filter',frm);"> {% endcomment %}
         <a class="filter-icon-button" data-toggle="modal" data-target="#modal-filter" id="filterBtn">
-            <img src="/static/images/home/icon_filter_off.png" alt="필터 아이콘">
+            <div class="filter-count off">1</div>
+            <img src="/static/images/home/icon_filter_off.png" class="filterBtnImg" alt="필터 아이콘">
         </a>
         <input type="text" placeholder="음식점 이름을 검색해보세요">
         <button onclick="searchData();">검색</button>
     </div>
 </header>
 <div class="home-container">
-<div class="drag-slider">
-  <button class="slide-btn prev">&lt;</button>
-  <div class="slider-container">
-    <div class="slider-track">
-        {% for loc in locationDetail %}
-        <div class="slide-item">
-            <a class="slide-item" href="/restaurants/reslist?locno={{ loc.location.locno }}&locdno={{ loc.locdno }}">
-                {{ loc.locd_nm }}
-            </a>
+    <h1>어디로 갈까요?</h1>
+    <div class="drag-slider">
+    <button class="slide-btn prev">&lt;</button>
+    <div class="slider-container">
+        <div class="slider-track">
+            {% for loc in locationDetail %}
+            <div class="slide-item">
+                <a class="slide-item" href="/restaurants/reslist?locno={{ loc.location.locno }}&locdno={{ loc.locdno }}">
+                    {{ loc.locd_nm }}
+                </a>
+            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
     </div>
-  </div>
-  <button class="slide-btn next">&gt;</button>
-</div>
-<div class="food-container">
-    <ul class="food-grid">
-        {% for food in foodType %}
-        <li>
-            <a href="/restaurants/reslist?ftypeno={{ food.ftypeno }}" class="food-item">
-                <div class="food-img">
-                    <img src="{{ food.img_url_main }}" alt="{{ food.ftype }}">
-                </div>
-                <span class="food-name">{{ food.ftype }}</span>
-            </a>
-        </li>
-        {% endfor %}
-    </ul>
-</div>
+    <button class="slide-btn next">&gt;</button>
+    </div>
+    <h1>무엇을 먹을까요?</h1>
+    <div class="food-container">
+        <ul class="food-grid">
+            {% for food in foodType %}
+            <li>
+                <a href="/restaurants/reslist?ftypeno={{ food.ftypeno }}" class="food-item">
+                    <div class="food-img">
+                        <img src="{{ food.img_url_main }}" alt="{{ food.ftype }}">
+                    </div>
+                    <span class="food-name">{{ food.ftype }}</span>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
 </div>
 <!-- Modal Body -->
 <form id="searchFrm" name="searchFrm">

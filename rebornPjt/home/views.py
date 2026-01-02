@@ -61,7 +61,17 @@ def index(request):
 
 def filPop(request):
     # 필터에 저장된 값들(블루리본에도 안 되어 있는걸로 보여서 X)
-    context = {"req": request.GET}
+    context = {
+        "req": request,
+        "checked_locno": request.GET.getlist("locno"),
+        "checked_locdno": request.GET.getlist("locdno"),
+        "checked_ftypeno": request.GET.getlist("ftypeno"),
+        "checked_weeks": request.GET.getlist("weeks"),
+        "price_min": request.GET.get("price_min"),
+        "price_max": request.GET.get("price_max"),
+        "open_time": request.GET.get("open_time"),
+        "close_time": request.GET.get("close_time"),
+    }
     
     # 지역, 음식타입 테이블에 있는걸로 가져와서 팝업에 체크박스 생성
     # # 1. Location 테이블 조회
@@ -122,7 +132,9 @@ def filPop(request):
         {"ftypeno": 14, "ftype": "칼국수", "img_url_main": "/static/images/home/food/kalguksu.jpg", "is_main": "y", "sort": 14},
     ]
 
+    context["weekdays"] = ["월", "화", "수", "목", "금", "토", "일"]
     context["location"] = location_qs
     context["locationDetail"] = locationDetail_qs
     context["foodType"] = foodType_qs
+    
     return render(request, 'filPop.html', context)
