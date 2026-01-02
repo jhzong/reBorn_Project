@@ -1,5 +1,5 @@
 from django.db import models
-from member.models import MyUser
+# from member.models import MyUser
 
 # class Location(models.Model):
 #     locno = models.AutoField(primary_key=True)
