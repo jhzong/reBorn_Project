@@ -179,6 +179,7 @@ body.modal-open {
 
 /* --- 입력 필드 및 검색 버튼 --- */
 .form-control {
+    max-width: 120px;
     padding: 12px;
     border-radius: 8px;
     border: 1px solid #ddd;
@@ -218,30 +219,7 @@ body.modal-open {
     border-color: #1b47b3;
 }
 
-/* --- '모든 리본' 체크박스 (우측 상단) --- */
-.search-check-box {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-/* 이미지 기반 아이콘 스타일 (HTML에 span.checkbox-icon 필요) */
-.search-check-box .checkbox-icon {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    /* 기본 off 이미지 */
-    background-image: url(/assets/image/search/icon_check_off.png);
-    background-size: contain;
-}
-
-.search-check-box input[type="checkbox"]:checked + label .checkbox-icon {
-     /* 체크 시 on 이미지로 변경 */
-    background-image: url(/assets/image/search/icon_check_on.png);
-}
-
 /* --- 평균 가격대 및 영업시간 섹션 --- */
-
 /* 입력 필드 컨테이너 정렬 */
 .price-range-inputs,
 .time-range-inputs {
@@ -257,11 +235,16 @@ body.modal-open {
     padding-left: 25px; /* 기호 공간 확보 */
 }
 
-.price-range-inputs span:first-child,
-.time-range-inputs span:first-child {
+.price-range-inputs span:first-child {
     left: 12px;
     top: 50%;
     transform: translateY(-50%);
+    color: #555;
+    pointer-events: none; /* 클릭 방지 */
+}
+.time-range-inputs span:first-child {
+    left: 12px;
+    top: 50%;
     color: #555;
     pointer-events: none; /* 클릭 방지 */
 }
@@ -295,47 +278,42 @@ body.modal-open {
     color: #999;
 }
 
-/* --- 슬라이더 (noUiSlider) 스타일 (이미지 기반) --- */
-/* 이전에 사용자가 제공했던 noUiSlider 클래스를 활용합니다 */
-.noUi-target {
-    background: #fafafa;
-    border: 1px solid #D3D3D3;
-    box-shadow: inset 0 1px 1px #f0f0f0, 0 3px 6px -5px #bbb;
-    border-radius: 4px;
+/* 시간 0~24시로 사용한다면 나중에 주석처리 */
+.time-slider-wrapper {
+    position: relative;
+    margin-top: 20px;
 }
 
-.noUi-horizontal {
-    height: 10px; /* 슬라이더 바 높이 */
-    margin: 10px 0; /* 상하 여백 */
+.time-markers {
+    position: absolute;
+    top: 100%;          /* 슬라이더 바로 아래 */
+    left: 0;
+    width: 100%;
+    height: 30px;
+    pointer-events: none; /* 드래그 방해 방지 */
 }
 
-.noUi-connects {
-    border-radius: 3px;
+.marker {
+    position: absolute;
+    transform: translateX(-50%);
+    text-align: center;
+    white-space: nowrap;
 }
 
-.noUi-connect {
-    background: #1b47b3; /* 선택된 범위 색상 */
+.marker .line {
+    width: 1px;
+    height: 10px;
+    background: #999;
+    margin: 0 auto;
 }
 
-.noUi-handle {
-    border: 1px solid #D9D9D9;
-    border-radius: 50%; /* 핸들 모양 (이미지처럼 동그랗게) */
-    background: #fff;
-    cursor: default;
-    box-shadow: inset 0 0 1px #fff, inset 0 1px 7px #ebebeb, 0 3px 6px -3px #bbb;
-    
-    /* 핸들 크기 및 위치 조정 */
-    width: 20px;
-    height: 20px;
-    right: -10px; /* 핸들 절반이 바깥으로 나오게 */
-    top: -6px; /* 바 높이와 핸들 높이 차이 계산하여 중앙 정렬 */
+.marker .label {
+    font-size: 11px;
+    color: #666;
+    margin-top: 4px;
+    white-space: nowrap;
 }
-
-/* 핸들 내부 세로선 제거 (이미지 기준) */
-.noUi-handle:before, .noUi-handle:after {
-    display: none;
-}
-
+/* 시간 0~24시로 사용한다면 나중에 주석처리 */
 
 /* 지역검색 'main-filters' 사용 */
 .main-filters {
