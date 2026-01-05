@@ -178,6 +178,15 @@ body.modal-open {
 }
 
 /* --- 입력 필드 및 검색 버튼 --- */
+.r_search-box input {
+    flex: 1;
+    padding: 12px;
+    padding-right: 45px; /* 아이콘이 들어갈 공간 확보 (중요) */
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    width: 100%;
+}
+
 .form-control {
     max-width: 120px;
     padding: 12px;
@@ -276,6 +285,15 @@ body.modal-open {
     text-align: center;
     margin-top: 10px;
     color: #999;
+}
+
+/* 시간 input 앞 시계 아이콘 */
+.time-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
 }
 
 /* 시간 0~24시로 사용한다면 나중에 주석처리 */

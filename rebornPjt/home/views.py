@@ -63,6 +63,7 @@ def filPop(request):
     # 필터에 저장된 값들(블루리본에도 안 되어 있는걸로 보여서 X)
     context = {
         "req": request,
+        "res_nm": request.GET.get("res_nm"),
         "checked_locno": request.GET.getlist("locno"),
         "checked_locdno": request.GET.getlist("locdno"),
         "checked_ftypeno": request.GET.getlist("ftypeno"),

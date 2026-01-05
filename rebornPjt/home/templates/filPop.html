@@ -343,7 +343,7 @@ $(document).ready(function() {
           </div>
           <div class="filters">
             <div class="r_search-box">
-                <input type="text" name="search" placeholder="음식점 이름을 검색해보세요">
+                <input type="text" name="searchResNm" value="{{res_nm|default:''}}" placeholder="음식점 이름을 검색해보세요">
             </div>
           </div>
         </div>
@@ -562,12 +562,14 @@ $(document).ready(function() {
                 <div class="time-range-inputs">
                     <div style="display: flex; align-items: center;">
                         <span style="margin-right: 5px; color: #f7b733; font-size: 18px;">☀</span>
+                        <div style="position: relative; left: 24px; color: #555;"><i class="fa fa-clock time-icon"></i></div>
                         <input type="text" id="time-open" class="form-control" name="open_time" value="{{ open_time|default:'06:00' }}" style="width: 80px;">
                     </div>
                     <span style="margin: 0 10px; line-height: 40px; color: #999;">-</span>
                     <div style="display: flex; align-items: center;">
-                         <input type="text" id="time-close" class="form-control" name="close_time" value="{{close_time|default:'05:59'}}" style="width: 80px;">
-                         <span style="margin-left: 5px; color: #f7b733; font-size: 18px;">☾</span>
+                        <div style="position: relative; left: 24px; color: #555;"><i class="fa fa-clock time-icon"></i></div>
+                        <input type="text" id="time-close" class="form-control" name="close_time" value="{{close_time|default:'05:59'}}" style="width: 80px;">
+                        <span style="margin-left: 5px; color: #f7b733; font-size: 18px;">☾</span>
                     </div>
                 </div>
                 
